@@ -1,19 +1,37 @@
-// ======================================
-// FINTRACK V1
-// ======================================
+const STORAGE_KEY =
+  "fintrack-transactions-v1";
 
-const STORAGE_KEY = "fintrack-transactions-v1";
 
 let transactions =
-  JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  JSON.parse(
+    localStorage.getItem(STORAGE_KEY)
+  ) || [];
 
-let currentType = "expense";
+
+let currentType =
+  "expense";
 
 
+let editingId =
+  null;
+
+
+
+// ========================================
 // ELEMENTOS
+// ========================================
 
 const form =
   document.getElementById("transactionForm");
+
+const formTitle =
+  document.getElementById("formTitle");
+
+const submitButton =
+  document.getElementById("submitButton");
+
+const cancelEdit =
+  document.getElementById("cancelEdit");
 
 const descriptionInput =
   document.getElementById("description");
@@ -63,14 +81,52 @@ const categoryFilter =
 const demoButton =
   document.getElementById("demoButton");
 
+const categoryChart =
+  document.getElementById("categoryChart");
 
-// FECHA DE HOY
+const categoryEmpty =
+  document.getElementById("categoryEmpty");
+
+const topCategoryIcon =
+  document.getElementById("topCategoryIcon");
+
+const topCategoryName =
+  document.getElementById("topCategoryName");
+
+const topCategoryAmount =
+  document.getElementById("topCategoryAmount");
+
+const expenseCount =
+  document.getElementById("expenseCount");
+
+const averageExpense =
+  document.getElementById("averageExpense");
+
+const toast =
+  document.getElementById("toast");
+
+
+
+// ========================================
+// FECHA
+// ========================================
+
+function today() {
+
+  return new Date()
+    .toISOString()
+    .split("T")[0];
+
+}
 
 dateInput.value =
-  new Date().toISOString().split("T")[0];
+  today();
 
 
-// FORMATO EURO
+
+// ========================================
+// EURO
+// ========================================
 
 const euro =
   new Intl.NumberFormat(
@@ -82,7 +138,10 @@ const euro =
   );
 
 
+
+// ========================================
 // GUARDAR
+// ========================================
 
 function saveTransactions() {
 
@@ -94,11 +153,39 @@ function saveTransactions() {
 }
 
 
+
+// ========================================
+// TOAST
+// ========================================
+
+function showToast(text) {
+
+  toast.textContent =
+    text;
+
+  toast.classList.add("show");
+
+  setTimeout(
+    () => {
+
+      toast.classList.remove("show");
+
+    },
+    1800
+  );
+
+}
+
+
+
+// ========================================
 // ICONOS
+// ========================================
 
 function categoryIcon(category) {
 
   const icons = {
+
     Comida: "🍔",
     Transporte: "🚗",
     Compras: "🛍️",
@@ -107,18 +194,26 @@ function categoryIcon(category) {
     Salud: "❤️",
     Ingresos: "💰",
     Otros: "📦"
+
   };
 
   return icons[category] || "📦";
+
 }
 
 
-// FORMATEAR FECHA
+
+// ========================================
+// FECHA FORMATEADA
+// ========================================
 
 function formatDate(dateString) {
 
   const date =
-    new Date(dateString + "T00:00:00");
+    new Date(
+      dateString +
+      "T00:00:00"
+    );
 
   return date.toLocaleDateString(
     "es-ES",
@@ -132,54 +227,263 @@ function formatDate(dateString) {
 }
 
 
+
+// ========================================
 // RESUMEN
+// ========================================
 
 function updateSummary() {
 
   const income =
     transactions
-      .filter(t => t.type === "income")
+      .filter(
+        transaction =>
+          transaction.type === "income"
+      )
       .reduce(
-        (total, t) => total + t.amount,
+        (total, transaction) =>
+          total + transaction.amount,
         0
       );
 
+
   const expenses =
     transactions
-      .filter(t => t.type === "expense")
+      .filter(
+        transaction =>
+          transaction.type === "expense"
+      )
       .reduce(
-        (total, t) => total + t.amount,
+        (total, transaction) =>
+          total + transaction.amount,
         0
       );
+
 
   const balance =
     income - expenses;
 
-  let savingRate = 0;
 
-  if (income > 0) {
+  const savingRate =
+    income > 0
+      ?
+      (
+        (
+          income - expenses
+        ) /
+        income
+      ) * 100
+      :
+      0;
 
-    savingRate =
-      ((income - expenses) / income) * 100;
-
-  }
 
   balanceOutput.textContent =
     euro.format(balance);
 
+
   incomeOutput.textContent =
     euro.format(income);
+
 
   expenseOutput.textContent =
     euro.format(expenses);
 
+
   savingOutput.textContent =
-    Math.round(savingRate) + " %";
+    Math.round(savingRate)
+    +
+    " %";
 
 }
 
 
+
+// ========================================
+// ESTADÍSTICAS CATEGORÍAS
+// ========================================
+
+function updateCategoryAnalytics() {
+
+  const expenses =
+    transactions.filter(
+      transaction =>
+        transaction.type === "expense"
+    );
+
+
+  const totalExpenses =
+    expenses.reduce(
+      (total, transaction) =>
+        total + transaction.amount,
+      0
+    );
+
+
+  const categories =
+    {};
+
+
+  expenses.forEach(
+    transaction => {
+
+      if (
+        !categories[
+          transaction.category
+        ]
+      ) {
+
+        categories[
+          transaction.category
+        ] = 0;
+
+      }
+
+
+      categories[
+        transaction.category
+      ] +=
+        transaction.amount;
+
+    }
+  );
+
+
+  const sorted =
+    Object.entries(categories)
+      .sort(
+        (a, b) =>
+          b[1] - a[1]
+      );
+
+
+  categoryChart.innerHTML =
+    "";
+
+
+  categoryEmpty.style.display =
+    sorted.length
+      ? "none"
+      : "block";
+
+
+  sorted.forEach(
+    ([category, amount]) => {
+
+      const percentage =
+        totalExpenses > 0
+          ?
+          (
+            amount /
+            totalExpenses
+          ) * 100
+          :
+          0;
+
+
+      const row =
+        document.createElement("div");
+
+
+      row.className =
+        "category-row";
+
+
+      row.innerHTML = `
+
+        <div class="category-name">
+
+          ${categoryIcon(category)}
+          ${category}
+
+        </div>
+
+        <div class="category-track">
+
+          <div
+            class="category-fill"
+            style="width:${percentage}%"
+          >
+          </div>
+
+        </div>
+
+        <div class="category-amount">
+
+          ${euro.format(amount)}
+
+        </div>
+
+      `;
+
+
+      categoryChart
+        .appendChild(row);
+
+    }
+  );
+
+
+
+  if (sorted.length) {
+
+    const [category, amount] =
+      sorted[0];
+
+
+    topCategoryIcon.textContent =
+      categoryIcon(category);
+
+
+    topCategoryName.textContent =
+      category;
+
+
+    topCategoryAmount.textContent =
+      euro.format(amount);
+
+  }
+
+  else {
+
+    topCategoryIcon.textContent =
+      "—";
+
+
+    topCategoryName.textContent =
+      "Sin datos";
+
+
+    topCategoryAmount.textContent =
+      euro.format(0);
+
+  }
+
+
+
+  expenseCount.textContent =
+    expenses.length;
+
+
+
+  const average =
+    expenses.length
+      ?
+      totalExpenses /
+      expenses.length
+      :
+      0;
+
+
+  averageExpense.textContent =
+    euro.format(average);
+
+}
+
+
+
+// ========================================
 // RENDER
+// ========================================
 
 function renderTransactions() {
 
@@ -188,172 +492,297 @@ function renderTransactions() {
       .trim()
       .toLowerCase();
 
+
   const selectedType =
     typeFilter.value;
+
 
   const selectedCategory =
     categoryFilter.value;
 
 
-  let filtered =
-    transactions.filter(transaction => {
 
-      const matchesSearch =
-        transaction.description
-          .toLowerCase()
-          .includes(search);
+  const filtered =
+    transactions
+      .filter(
+        transaction => {
 
-      const matchesType =
-        selectedType === "all" ||
-        transaction.type === selectedType;
+          const matchesSearch =
+            transaction
+              .description
+              .toLowerCase()
+              .includes(search);
 
-      const matchesCategory =
-        selectedCategory === "all" ||
-        transaction.category === selectedCategory;
 
-      return (
-        matchesSearch &&
-        matchesType &&
-        matchesCategory
+          const matchesType =
+            selectedType === "all"
+            ||
+            transaction.type ===
+            selectedType;
+
+
+          const matchesCategory =
+            selectedCategory ===
+            "all"
+            ||
+            transaction.category ===
+            selectedCategory;
+
+
+          return (
+            matchesSearch
+            &&
+            matchesType
+            &&
+            matchesCategory
+          );
+
+        }
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.date)
+          -
+          new Date(a.date)
       );
 
-    });
 
 
-  filtered.sort(
-    (a, b) =>
-      new Date(b.date) -
-      new Date(a.date)
-  );
-
-
-  transactionList.innerHTML = "";
+  transactionList.innerHTML =
+    "";
 
 
   emptyState.style.display =
-    filtered.length === 0
-      ? "flex"
-      : "none";
+    filtered.length
+      ? "none"
+      : "flex";
 
 
-  filtered.forEach(transaction => {
 
-    const item =
-      document.createElement("article");
+  filtered.forEach(
+    transaction => {
 
-    item.className =
-      "transaction-item";
-
-
-    const sign =
-      transaction.type === "income"
-        ? "+"
-        : "−";
+      const item =
+        document.createElement("article");
 
 
-    item.innerHTML = `
+      item.className =
+        "transaction-item";
 
-      <div class="transaction-icon">
-        ${categoryIcon(transaction.category)}
-      </div>
 
-      <div class="transaction-main">
+      const sign =
+        transaction.type ===
+        "income"
+          ? "+"
+          : "−";
 
-        <h3>
-          ${transaction.description}
-        </h3>
 
-        <div class="transaction-meta">
+      item.innerHTML = `
 
-          <span>
-            ${transaction.category}
-          </span>
+        <div class="transaction-icon">
 
-          <span>
-            ${formatDate(transaction.date)}
-          </span>
+          ${categoryIcon(
+            transaction.category
+          )}
 
         </div>
 
-      </div>
 
-      <div class="transaction-amount ${transaction.type}">
+        <div class="transaction-main">
 
-        ${sign}${euro.format(transaction.amount)}
-
-      </div>
-
-      <button
-        class="delete-button"
-        data-id="${transaction.id}"
-        aria-label="Eliminar movimiento"
-      >
-        ✕
-      </button>
-
-    `;
+          <h3>
+            ${transaction.description}
+          </h3>
 
 
-    transactionList.appendChild(item);
+          <div class="transaction-meta">
 
-  });
+            <span>
+              ${transaction.category}
+            </span>
+
+            <span>
+              ${formatDate(
+                transaction.date
+              )}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="transaction-amount
+          ${transaction.type}"
+        >
+
+          ${sign}
+          ${euro.format(
+            transaction.amount
+          )}
+
+        </div>
+
+
+        <button
+          class="edit-button"
+          data-id="${transaction.id}"
+          aria-label="Editar"
+        >
+          ✎
+        </button>
+
+
+        <button
+          class="delete-button"
+          data-id="${transaction.id}"
+          aria-label="Eliminar"
+        >
+          ✕
+        </button>
+
+      `;
+
+
+      transactionList
+        .appendChild(item);
+
+    }
+  );
+
 
 
   const total =
     transactions.length;
 
+
   countOutput.textContent =
     total === 1
-      ? "1 movimiento"
-      : `${total} movimientos`;
+      ?
+      "1 movimiento"
+      :
+      `${total} movimientos`;
+
 
 
   updateSummary();
 
+  updateCategoryAnalytics();
+
 }
 
 
-// TIPO INGRESO / GASTO
 
-typeButtons.forEach(button => {
+// ========================================
+// CAMBIAR TIPO
+// ========================================
 
-  button.addEventListener(
-    "click",
-    () => {
+function setType(type) {
 
-      typeButtons.forEach(
-        b => b.classList.remove("active")
+  currentType =
+    type;
+
+
+  typeButtons.forEach(
+    button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.type === type
       );
-
-      button.classList.add("active");
-
-      currentType =
-        button.dataset.type;
-
-
-      if (currentType === "income") {
-
-        categoryInput.value =
-          "Ingresos";
-
-      }
-
-      else if (
-        categoryInput.value === "Ingresos"
-      ) {
-
-        categoryInput.value =
-          "Comida";
-
-      }
 
     }
   );
 
-});
+
+  if (
+    type === "income"
+  ) {
+
+    categoryInput.value =
+      "Ingresos";
+
+  }
+
+  else if (
+    categoryInput.value ===
+    "Ingresos"
+  ) {
+
+    categoryInput.value =
+      "Comida";
+
+  }
+
+}
 
 
-// AÑADIR
+
+typeButtons.forEach(
+  button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        setType(
+          button.dataset.type
+        );
+
+      }
+    );
+
+  }
+);
+
+
+
+// ========================================
+// RESET FORM
+// ========================================
+
+function resetForm() {
+
+  form.reset();
+
+
+  editingId =
+    null;
+
+
+  formTitle.textContent =
+    "Añadir operación";
+
+
+  submitButton.textContent =
+    "Añadir movimiento";
+
+
+  cancelEdit.classList.add(
+    "hidden"
+  );
+
+
+  dateInput.value =
+    today();
+
+
+  setType(
+    "expense"
+  );
+
+
+  categoryInput.value =
+    "Comida";
+
+}
+
+
+
+// ========================================
+// GUARDAR / EDITAR
+// ========================================
 
 form.addEventListener(
   "submit",
@@ -362,12 +791,20 @@ form.addEventListener(
     event.preventDefault();
 
 
+    const description =
+      descriptionInput.value
+        .trim();
+
+
     const amount =
-      Number(amountInput.value);
+      Number(
+        amountInput.value
+      );
 
 
     if (
-      !descriptionInput.value.trim() ||
+      !description
+      ||
       amount <= 0
     ) {
 
@@ -376,58 +813,84 @@ form.addEventListener(
     }
 
 
-    const transaction = {
 
-      id:
-        Date.now().toString(),
+    if (editingId) {
 
-      description:
-        descriptionInput.value.trim(),
-
-      amount,
-
-      category:
-        categoryInput.value,
-
-      date:
-        dateInput.value,
-
-      type:
-        currentType
-
-    };
+      const index =
+        transactions.findIndex(
+          transaction =>
+            transaction.id ===
+            editingId
+        );
 
 
-    transactions.push(transaction);
+      if (
+        index !== -1
+      ) {
+
+        transactions[index] = {
+
+          ...transactions[index],
+
+          description,
+
+          amount,
+
+          category:
+            categoryInput.value,
+
+          date:
+            dateInput.value,
+
+          type:
+            currentType
+
+        };
+
+      }
+
+
+      showToast(
+        "Movimiento actualizado ✓"
+      );
+
+    }
+
+    else {
+
+      transactions.push({
+
+        id:
+          Date.now()
+            .toString(),
+
+        description,
+
+        amount,
+
+        category:
+          categoryInput.value,
+
+        date:
+          dateInput.value,
+
+        type:
+          currentType
+
+      });
+
+
+      showToast(
+        "Movimiento añadido ✓"
+      );
+
+    }
+
+
 
     saveTransactions();
 
-    form.reset();
-
-
-    dateInput.value =
-      new Date()
-        .toISOString()
-        .split("T")[0];
-
-
-    currentType =
-      "expense";
-
-
-    typeButtons.forEach(button => {
-
-      button.classList.toggle(
-        "active",
-        button.dataset.type === "expense"
-      );
-
-    });
-
-
-    categoryInput.value =
-      "Comida";
-
+    resetForm();
 
     renderTransactions();
 
@@ -435,48 +898,158 @@ form.addEventListener(
 );
 
 
-// ELIMINAR
+
+// ========================================
+// EDITAR / BORRAR
+// ========================================
 
 transactionList.addEventListener(
   "click",
   event => {
 
-    const button =
-      event.target.closest(".delete-button");
-
-    if (!button) return;
-
-
-    const id =
-      button.dataset.id;
-
-
-    transactions =
-      transactions.filter(
-        transaction =>
-          transaction.id !== id
+    const editButton =
+      event.target.closest(
+        ".edit-button"
       );
 
 
-    saveTransactions();
+    const deleteButton =
+      event.target.closest(
+        ".delete-button"
+      );
 
-    renderTransactions();
+
+
+    if (editButton) {
+
+      const id =
+        editButton.dataset.id;
+
+
+      const transaction =
+        transactions.find(
+          transaction =>
+            transaction.id === id
+        );
+
+
+      if (!transaction) return;
+
+
+      editingId =
+        id;
+
+
+      descriptionInput.value =
+        transaction.description;
+
+
+      amountInput.value =
+        transaction.amount;
+
+
+      categoryInput.value =
+        transaction.category;
+
+
+      dateInput.value =
+        transaction.date;
+
+
+      setType(
+        transaction.type
+      );
+
+
+      categoryInput.value =
+        transaction.category;
+
+
+      formTitle.textContent =
+        "Editar movimiento";
+
+
+      submitButton.textContent =
+        "Guardar cambios";
+
+
+      cancelEdit.classList.remove(
+        "hidden"
+      );
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+
+    if (deleteButton) {
+
+      const id =
+        deleteButton.dataset.id;
+
+
+      transactions =
+        transactions.filter(
+          transaction =>
+            transaction.id !== id
+        );
+
+
+      saveTransactions();
+
+      renderTransactions();
+
+      showToast(
+        "Movimiento eliminado"
+      );
+
+
+      if (
+        editingId === id
+      ) {
+
+        resetForm();
+
+      }
+
+    }
 
   }
 );
 
 
+
+// ========================================
+// CANCELAR EDICIÓN
+// ========================================
+
+cancelEdit.addEventListener(
+  "click",
+  resetForm
+);
+
+
+
+// ========================================
 // FILTROS
+// ========================================
 
 searchInput.addEventListener(
   "input",
   renderTransactions
 );
 
+
 typeFilter.addEventListener(
   "change",
   renderTransactions
 );
+
 
 categoryFilter.addEventListener(
   "change",
@@ -484,24 +1057,30 @@ categoryFilter.addEventListener(
 );
 
 
+
+// ========================================
 // DATOS DEMO
+// ========================================
 
 demoButton.addEventListener(
   "click",
   () => {
 
-    const today =
+    const now =
       new Date();
+
 
     const date =
       daysAgo => {
 
         const d =
-          new Date(today);
+          new Date(now);
+
 
         d.setDate(
           d.getDate() - daysAgo
         );
+
 
         return d
           .toISOString()
@@ -510,49 +1089,71 @@ demoButton.addEventListener(
       };
 
 
+
     transactions = [
 
       {
         id: "demo1",
-        description: "Ingreso mensual",
+        description:
+          "Ingreso mensual",
         amount: 850,
-        category: "Ingresos",
+        category:
+          "Ingresos",
         date: date(10),
         type: "income"
       },
 
       {
         id: "demo2",
-        description: "Supermercado",
+        description:
+          "Supermercado",
         amount: 54.20,
-        category: "Comida",
+        category:
+          "Comida",
         date: date(2),
         type: "expense"
       },
 
       {
         id: "demo3",
-        description: "Transporte",
-        amount: 18.50,
-        category: "Transporte",
-        date: date(4),
+        description:
+          "Restaurante",
+        amount: 26.50,
+        category:
+          "Comida",
+        date: date(3),
         type: "expense"
       },
 
       {
         id: "demo4",
-        description: "Videojuego",
-        amount: 29.99,
-        category: "Ocio",
-        date: date(6),
+        description:
+          "Transporte",
+        amount: 18.50,
+        category:
+          "Transporte",
+        date: date(4),
         type: "expense"
       },
 
       {
         id: "demo5",
-        description: "Material de estudio",
+        description:
+          "Videojuego",
+        amount: 29.99,
+        category:
+          "Ocio",
+        date: date(6),
+        type: "expense"
+      },
+
+      {
+        id: "demo6",
+        description:
+          "Material de estudio",
         amount: 22.40,
-        category: "Estudios",
+        category:
+          "Estudios",
         date: date(7),
         type: "expense"
       }
@@ -562,12 +1163,23 @@ demoButton.addEventListener(
 
     saveTransactions();
 
+    resetForm();
+
     renderTransactions();
+
+    showToast(
+      "Datos demo cargados ✓"
+    );
 
   }
 );
 
 
+
+// ========================================
 // INICIO
+// ========================================
+
+resetForm();
 
 renderTransactions();
