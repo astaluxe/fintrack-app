@@ -10,7 +10,7 @@
   --panel2: #181c25;
   --input: #0d1016;
 
-  --border: rgba(255,255,255,.08);
+  --border: rgba(255, 255, 255, 0.08);
 
   --text: #f6f7fa;
   --muted: #858a96;
@@ -21,7 +21,7 @@
   --income: #45d69b;
   --expense: #ff6e79;
 
-  --shadow: 0 20px 60px rgba(0,0,0,.25);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
 body[data-theme="light"] {
@@ -30,12 +30,12 @@ body[data-theme="light"] {
   --panel2: #f0f1f5;
   --input: #f7f7fa;
 
-  --border: rgba(20,20,30,.1);
+  --border: rgba(20, 20, 30, 0.1);
 
   --text: #161720;
   --muted: #747783;
 
-  --shadow: 0 18px 50px rgba(30,30,50,.08);
+  --shadow: 0 18px 50px rgba(30, 30, 50, 0.08);
 }
 
 html {
@@ -43,20 +43,14 @@ html {
 }
 
 body {
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family: Arial, Helvetica, sans-serif;
   background: var(--bg);
-
   color: var(--text);
-
   line-height: 1.5;
 
   transition:
-    background .2s ease,
-    color .2s ease;
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 button,
@@ -79,51 +73,43 @@ button {
 }
 
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 .app-header {
   position: sticky;
-
   top: 0;
-
   z-index: 1000;
 
-  background:
-    color-mix(
-      in srgb,
-      var(--bg) 88%,
-      transparent
-    );
+  background: rgba(11, 13, 18, 0.92);
 
-  backdrop-filter:
-    blur(16px);
+  backdrop-filter: blur(16px);
 
   border-bottom:
     1px solid var(--border);
+}
+
+body[data-theme="light"] .app-header {
+  background: rgba(244, 245, 248, 0.94);
 }
 
 .header-content {
   min-height: 68px;
 
   display: flex;
-
   align-items: center;
-
-  justify-content:
-    space-between;
+  justify-content: space-between;
 
   gap: 25px;
 }
 
 .logo-button {
   border: 0;
-
   background: none;
-
   color: var(--text);
 
   display: flex;
-
   align-items: center;
 
   gap: 9px;
@@ -134,7 +120,6 @@ button {
   height: 34px;
 
   display: grid;
-
   place-items: center;
 
   border-radius: 10px;
@@ -153,7 +138,6 @@ button {
 
 .logo {
   font-weight: 900;
-
   letter-spacing: 1px;
 }
 
@@ -163,13 +147,11 @@ button {
 
 .desktop-nav {
   display: flex;
-
   gap: 4px;
 }
 
 .nav-tab {
   border: 0;
-
   background: none;
 
   color: var(--muted);
@@ -178,19 +160,18 @@ button {
 
   border-radius: 8px;
 
-  font-size: .82rem;
+  font-size: 0.82rem;
 }
 
 .nav-tab.active {
   background:
-    rgba(119,92,255,.12);
+    rgba(119, 92, 255, 0.12);
 
   color: var(--accent2);
 }
 
 .header-actions {
   display: flex;
-
   gap: 7px;
 }
 
@@ -198,21 +179,22 @@ button {
   width: 38px;
   height: 38px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 9px;
 
   background: var(--panel);
-
   color: var(--text);
 }
 
 
-/* APP */
+/* =========================
+   APP
+========================= */
 
 .app {
-  padding:
-    60px 0 110px;
+  padding: 60px 0 110px;
 }
 
 .view {
@@ -224,13 +206,14 @@ button {
 }
 
 
-/* TITULARES */
+/* =========================
+   TITULARES
+========================= */
 
 .eyebrow {
   color: var(--accent2);
 
-  font-size: .68rem;
-
+  font-size: 0.68rem;
   font-weight: 900;
 
   letter-spacing: 2px;
@@ -241,11 +224,8 @@ button {
 .welcome {
   display: flex;
 
-  justify-content:
-    space-between;
-
-  align-items:
-    flex-end;
+  justify-content: space-between;
+  align-items: flex-end;
 
   gap: 40px;
 
@@ -261,7 +241,7 @@ button {
       5rem
     );
 
-  line-height: .96;
+  line-height: 0.96;
 
   letter-spacing: -3px;
 }
@@ -284,14 +264,15 @@ button {
 }
 
 
-/* BOTONES */
+/* =========================
+   BOTONES
+========================= */
 
 .primary-button,
 .secondary-button,
 .danger-button,
 .danger-outline {
-  padding:
-    12px 17px;
+  padding: 12px 17px;
 
   border-radius: 9px;
 
@@ -306,6 +287,10 @@ button {
   color: white;
 }
 
+.primary-button:hover {
+  filter: brightness(1.08);
+}
+
 .secondary-button {
   background: var(--panel);
 
@@ -315,11 +300,15 @@ button {
     1px solid var(--border);
 }
 
+.secondary-button:hover {
+  background: var(--panel2);
+}
+
 .danger-button {
   border: 0;
 
   background:
-    rgba(255,110,121,.12);
+    rgba(255, 110, 121, 0.12);
 
   color: var(--expense);
 }
@@ -331,11 +320,13 @@ button {
 
   border:
     1px solid
-    rgba(255,110,121,.25);
+    rgba(255, 110, 121, 0.25);
 }
 
 
-/* SUMMARY */
+/* =========================
+   RESUMEN
+========================= */
 
 .summary-grid {
   display: grid;
@@ -352,7 +343,6 @@ button {
   min-height: 140px;
 
   display: flex;
-
   flex-direction: column;
 
   padding: 22px;
@@ -370,7 +360,7 @@ button {
 .summary-card > span {
   color: var(--muted);
 
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 .summary-card strong {
@@ -384,14 +374,14 @@ button {
 .summary-card small {
   color: var(--muted);
 
-  font-size: .72rem;
+  font-size: 0.72rem;
 }
 
 .balance-card {
   background:
     radial-gradient(
       circle at 100% 0,
-      rgba(119,92,255,.3),
+      rgba(119, 92, 255, 0.3),
       transparent 55%
     ),
     var(--panel);
@@ -406,7 +396,9 @@ button {
 }
 
 
-/* PANEL */
+/* =========================
+   PANELES
+========================= */
 
 .panel {
   padding: 26px;
@@ -428,11 +420,8 @@ button {
 .panel-heading {
   display: flex;
 
-  justify-content:
-    space-between;
-
-  align-items:
-    end;
+  justify-content: space-between;
+  align-items: flex-end;
 
   gap: 20px;
 
@@ -442,11 +431,13 @@ button {
 .count {
   color: var(--muted);
 
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 
-/* DASHBOARD */
+/* =========================
+   DASHBOARD
+========================= */
 
 .dashboard-grid {
   display: grid;
@@ -466,7 +457,9 @@ button {
 }
 
 
-/* FORM */
+/* =========================
+   FORMULARIOS
+========================= */
 
 form {
   display: flex;
@@ -485,7 +478,7 @@ label {
 
   gap: 6px;
 
-  font-size: .8rem;
+  font-size: 0.8rem;
 
   font-weight: 700;
 }
@@ -494,8 +487,7 @@ input,
 select {
   width: 100%;
 
-  padding:
-    12px 13px;
+  padding: 12px 13px;
 
   border-radius: 8px;
 
@@ -523,7 +515,6 @@ select:focus {
   position: absolute;
 
   right: 14px;
-
   top: 50%;
 
   transform:
@@ -572,7 +563,9 @@ select:focus {
 }
 
 
-/* FILTROS */
+/* =========================
+   FILTROS
+========================= */
 
 .filters {
   display: grid;
@@ -586,7 +579,9 @@ select:focus {
 }
 
 
-/* MOVIMIENTOS */
+/* =========================
+   MOVIMIENTOS
+========================= */
 
 .transaction-list {
   display: flex;
@@ -604,8 +599,7 @@ select:focus {
 
   gap: 12px;
 
-  padding:
-    14px 0;
+  padding: 14px 0;
 
   border-bottom:
     1px solid var(--border);
@@ -625,7 +619,7 @@ select:focus {
 }
 
 .transaction-main h3 {
-  font-size: .92rem;
+  font-size: 0.92rem;
 }
 
 .transaction-meta {
@@ -635,7 +629,7 @@ select:focus {
 
   color: var(--muted);
 
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 .transaction-amount {
@@ -670,18 +664,20 @@ select:focus {
   color: var(--accent2);
 
   background:
-    rgba(119,92,255,.1);
+    rgba(119, 92, 255, 0.1);
 }
 
 .delete-button:hover {
   color: var(--expense);
 
   background:
-    rgba(255,110,121,.1);
+    rgba(255, 110, 121, 0.1);
 }
 
 
-/* EMPTY */
+/* =========================
+   ESTADOS VACÍOS
+========================= */
 
 .empty-state {
   min-height: 300px;
@@ -691,7 +687,6 @@ select:focus {
   flex-direction: column;
 
   justify-content: center;
-
   align-items: center;
 
   text-align: center;
@@ -712,7 +707,7 @@ select:focus {
   border-radius: 50%;
 
   background:
-    rgba(119,92,255,.1);
+    rgba(119, 92, 255, 0.1);
 
   color: var(--accent2);
 }
@@ -722,8 +717,7 @@ select:focus {
 }
 
 .mini-empty {
-  padding:
-    45px 10px;
+  padding: 45px 10px;
 
   text-align: center;
 
@@ -731,7 +725,9 @@ select:focus {
 }
 
 
-/* ANALYTICS */
+/* =========================
+   ANALÍTICA
+========================= */
 
 .analytics-grid {
   display: grid;
@@ -764,7 +760,7 @@ select:focus {
 
   gap: 10px;
 
-  font-size: .78rem;
+  font-size: 0.78rem;
 }
 
 .category-track {
@@ -797,17 +793,17 @@ select:focus {
 }
 
 
-/* GRÁFICO MENSUAL */
+/* =========================
+   GRÁFICO MENSUAL
+========================= */
 
 .monthly-chart {
   height: 270px;
 
   display: flex;
 
-  align-items: end;
-
-  justify-content:
-    space-between;
+  align-items: flex-end;
+  justify-content: space-between;
 
   gap: 8px;
 
@@ -823,8 +819,7 @@ select:focus {
 
   flex-direction: column;
 
-  justify-content: end;
-
+  justify-content: flex-end;
   align-items: center;
 
   gap: 8px;
@@ -832,13 +827,11 @@ select:focus {
 
 .month-bars {
   width: 100%;
-
   height: 210px;
 
   display: flex;
 
-  align-items: end;
-
+  align-items: flex-end;
   justify-content: center;
 
   gap: 4px;
@@ -865,11 +858,13 @@ select:focus {
 .month-label {
   color: var(--muted);
 
-  font-size: .65rem;
+  font-size: 0.65rem;
 }
 
 
-/* TWO COLUMN */
+/* =========================
+   DOS COLUMNAS
+========================= */
 
 .two-column {
   display: grid;
@@ -883,7 +878,9 @@ select:focus {
 }
 
 
-/* CARDS LIST */
+/* =========================
+   TARJETAS
+========================= */
 
 .cards-list {
   display: grid;
@@ -910,8 +907,7 @@ select:focus {
 .item-card-top {
   display: flex;
 
-  justify-content:
-    space-between;
+  justify-content: space-between;
 
   gap: 15px;
 }
@@ -923,15 +919,9 @@ select:focus {
 .item-card p {
   color: var(--muted);
 
-  font-size: .78rem;
+  font-size: 0.78rem;
 
   margin-top: 4px;
-}
-
-.item-actions {
-  display: flex;
-
-  gap: 6px;
 }
 
 .small-button {
@@ -942,13 +932,19 @@ select:focus {
   padding: 7px 9px;
 
   background:
-    rgba(119,92,255,.12);
+    rgba(119, 92, 255, 0.12);
 
   color: var(--accent2);
 
-  font-size: .72rem;
+  font-size: 0.72rem;
 
   font-weight: 800;
+}
+
+.small-button:disabled {
+  opacity: 0.55;
+
+  cursor: default;
 }
 
 .small-delete {
@@ -960,19 +956,20 @@ select:focus {
 }
 
 
-/* PROGRESS */
+/* =========================
+   PROGRESO
+========================= */
 
 .progress-info {
   display: flex;
 
-  justify-content:
-    space-between;
+  justify-content: space-between;
 
   margin-top: 18px;
 
   color: var(--muted);
 
-  font-size: .72rem;
+  font-size: 0.72rem;
 }
 
 .progress-track {
@@ -1016,7 +1013,9 @@ select:focus {
 }
 
 
-/* SETTINGS */
+/* =========================
+   AJUSTES
+========================= */
 
 .settings-grid {
   display: grid;
@@ -1044,12 +1043,11 @@ select:focus {
 }
 
 .setting-card p {
-  margin:
-    10px 0 25px;
+  margin: 10px 0 25px;
 
   color: var(--muted);
 
-  font-size: .82rem;
+  font-size: 0.82rem;
 }
 
 .setting-card button {
@@ -1058,11 +1056,13 @@ select:focus {
 
 .danger-card {
   border-color:
-    rgba(255,110,121,.18);
+    rgba(255, 110, 121, 0.18);
 }
 
 
-/* TOAST */
+/* =========================
+   TOAST
+========================= */
 
 .toast {
   position: fixed;
@@ -1070,11 +1070,9 @@ select:focus {
   z-index: 5000;
 
   right: 20px;
-
   bottom: 25px;
 
-  padding:
-    12px 16px;
+  padding: 12px 16px;
 
   border-radius: 10px;
 
@@ -1089,7 +1087,8 @@ select:focus {
   transform:
     translateY(80px);
 
-  transition: .25s ease;
+  transition:
+    0.25s ease;
 }
 
 .toast.show {
@@ -1100,14 +1099,18 @@ select:focus {
 }
 
 
-/* MOBILE NAV */
+/* =========================
+   NAVEGACIÓN MÓVIL
+========================= */
 
 .mobile-nav {
   display: none;
 }
 
 
-/* TABLET */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 950px) {
 
@@ -1143,7 +1146,9 @@ select:focus {
 }
 
 
-/* MÓVIL */
+/* =========================
+   MÓVIL
+========================= */
 
 @media (max-width: 600px) {
 
@@ -1161,7 +1166,7 @@ select:focus {
   }
 
   .logo {
-    font-size: .9rem;
+    font-size: 0.9rem;
   }
 
   .welcome {
@@ -1255,9 +1260,6 @@ select:focus {
     height: 175px;
   }
 
-
-  /* NAVEGACIÓN INFERIOR */
-
   .mobile-nav {
     position: fixed;
 
@@ -1274,20 +1276,24 @@ select:focus {
 
     padding:
       7px 6px
-      calc(7px + env(safe-area-inset-bottom));
+      calc(
+        7px +
+        env(safe-area-inset-bottom)
+      );
 
     background:
-      color-mix(
-        in srgb,
-        var(--bg) 94%,
-        transparent
-      );
+      rgba(11, 13, 18, 0.96);
 
     backdrop-filter:
       blur(18px);
 
     border-top:
       1px solid var(--border);
+  }
+
+  body[data-theme="light"] .mobile-nav {
+    background:
+      rgba(244, 245, 248, 0.96);
   }
 
   .mobile-tab {
@@ -1305,7 +1311,7 @@ select:focus {
 
     gap: 2px;
 
-    font-size: .58rem;
+    font-size: 0.58rem;
   }
 
   .mobile-tab span {
