@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0d12">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0b0d12"
+  >
 
   <title>FinTrack | Finanzas personales</title>
 
@@ -14,7 +23,19 @@
 
   <link
     rel="manifest"
-    href="./manifest.webmanifest?v=11"
+    href="./manifest.webmanifest?v=12"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="./icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="./icon-192.png"
   >
 
   <link
@@ -23,7 +44,9 @@
   >
 </head>
 
+
 <body>
+
 
 <header class="app-header">
 
@@ -34,11 +57,15 @@
       data-view-target="dashboard"
       aria-label="Ir al panel"
     >
-      <span class="logo-icon">F</span>
+
+      <span class="logo-icon">
+        F
+      </span>
 
       <span class="logo">
         FIN<span>TRACK</span>
       </span>
+
     </button>
 
 
@@ -51,6 +78,7 @@
         Panel
       </button>
 
+
       <button
         class="nav-tab"
         data-view-target="budgets"
@@ -58,12 +86,14 @@
         Presupuestos
       </button>
 
+
       <button
         class="nav-tab"
         data-view-target="goals"
       >
         Objetivos
       </button>
+
 
       <button
         class="nav-tab"
@@ -85,6 +115,7 @@
         ☀
       </button>
 
+
       <button
         class="icon-button"
         data-view-target="settings"
@@ -104,7 +135,9 @@
 <main class="container app">
 
 
-  <!-- PANEL -->
+  <!-- =========================
+       PANEL
+  ========================== -->
 
   <section
     class="view active"
@@ -148,6 +181,7 @@
 
     <section class="summary-grid">
 
+
       <article class="summary-card balance-card">
 
         <span>
@@ -163,6 +197,7 @@
         </small>
 
       </article>
+
 
 
       <article class="summary-card">
@@ -185,6 +220,7 @@
       </article>
 
 
+
       <article class="summary-card">
 
         <span>
@@ -203,6 +239,7 @@
         </small>
 
       </article>
+
 
 
       <article class="summary-card">
@@ -254,6 +291,7 @@
               Gasto
             </button>
 
+
             <button
               type="button"
               class="type-button"
@@ -263,6 +301,7 @@
             </button>
 
           </div>
+
 
 
           <label>
@@ -278,6 +317,7 @@
             >
 
           </label>
+
 
 
           <label>
@@ -302,6 +342,7 @@
             </div>
 
           </label>
+
 
 
           <label>
@@ -350,6 +391,7 @@
           </label>
 
 
+
           <label>
 
             Fecha
@@ -361,6 +403,7 @@
             >
 
           </label>
+
 
 
           <button
@@ -493,11 +536,13 @@
         </div>
 
 
+
         <div
           id="transactionList"
           class="transaction-list"
         >
         </div>
+
 
 
         <div
@@ -540,13 +585,11 @@
           Gastos por categoría
         </h2>
 
-
         <div
           id="categoryChart"
           class="category-chart"
         >
         </div>
-
 
         <div
           id="categoryEmpty"
@@ -569,7 +612,6 @@
           Evolución
         </h2>
 
-
         <div
           id="monthlyChart"
           class="monthly-chart"
@@ -584,7 +626,9 @@
 
 
 
-  <!-- PRESUPUESTOS -->
+  <!-- =========================
+       PRESUPUESTOS
+  ========================== -->
 
   <section
     class="view"
@@ -661,6 +705,7 @@
           </label>
 
 
+
           <label>
 
             Límite mensual
@@ -684,6 +729,7 @@
           </label>
 
 
+
           <button
             type="submit"
             class="primary-button"
@@ -703,13 +749,11 @@
           Tus límites
         </h2>
 
-
         <div
           id="budgetList"
           class="cards-list"
         >
         </div>
-
 
         <div
           id="budgetEmpty"
@@ -726,7 +770,9 @@
 
 
 
-  <!-- OBJETIVOS -->
+  <!-- =========================
+       OBJETIVOS
+  ========================== -->
 
   <section
     class="view"
@@ -779,6 +825,7 @@
           </label>
 
 
+
           <label>
 
             Objetivo
@@ -800,6 +847,7 @@
             </div>
 
           </label>
+
 
 
           <label>
@@ -825,6 +873,7 @@
           </label>
 
 
+
           <button
             type="submit"
             class="primary-button"
@@ -844,13 +893,11 @@
           Mis objetivos
         </h2>
 
-
         <div
           id="goalList"
           class="cards-list"
         >
         </div>
-
 
         <div
           id="goalEmpty"
@@ -867,7 +914,9 @@
 
 
 
-  <!-- RECURRENTES -->
+  <!-- =========================
+       RECURRENTES
+  ========================== -->
 
   <section
     class="view"
@@ -924,6 +973,7 @@
           </label>
 
 
+
           <label>
 
             Concepto
@@ -937,6 +987,7 @@
             >
 
           </label>
+
 
 
           <label>
@@ -962,47 +1013,26 @@
           </label>
 
 
+
           <label>
 
             Categoría
 
             <select id="recurringCategory">
 
-              <option>
-                Comida
-              </option>
-
-              <option>
-                Transporte
-              </option>
-
-              <option>
-                Compras
-              </option>
-
-              <option>
-                Ocio
-              </option>
-
-              <option>
-                Estudios
-              </option>
-
-              <option>
-                Salud
-              </option>
-
-              <option>
-                Ingresos
-              </option>
-
-              <option>
-                Otros
-              </option>
+              <option>Comida</option>
+              <option>Transporte</option>
+              <option>Compras</option>
+              <option>Ocio</option>
+              <option>Estudios</option>
+              <option>Salud</option>
+              <option>Ingresos</option>
+              <option>Otros</option>
 
             </select>
 
           </label>
+
 
 
           <label>
@@ -1019,6 +1049,7 @@
             >
 
           </label>
+
 
 
           <button
@@ -1040,13 +1071,11 @@
           Operaciones recurrentes
         </h2>
 
-
         <div
           id="recurringList"
           class="cards-list"
         >
         </div>
-
 
         <div
           id="recurringEmpty"
@@ -1063,7 +1092,9 @@
 
 
 
-  <!-- AJUSTES -->
+  <!-- =========================
+       AJUSTES
+  ========================== -->
 
   <section
     class="view"
@@ -1262,6 +1293,7 @@
     Panel
   </button>
 
+
   <button
     class="mobile-tab"
     data-view-target="budgets"
@@ -1269,6 +1301,7 @@
     <span>▤</span>
     Límites
   </button>
+
 
   <button
     class="mobile-tab"
@@ -1278,6 +1311,7 @@
     Metas
   </button>
 
+
   <button
     class="mobile-tab"
     data-view-target="recurring"
@@ -1285,6 +1319,7 @@
     <span>↻</span>
     Fijos
   </button>
+
 
   <button
     class="mobile-tab"
@@ -1308,4 +1343,5 @@
 <script src="./script.js?v=11"></script>
 
 </body>
+
 </html>
