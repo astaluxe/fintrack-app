@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>FinTrack | Personal finance dashboard</title>
+
+  <meta
+    name="description"
+    content="Aplicación demostrativa de gestión de ingresos y gastos."
+  >
+
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+
+<body>
+
+  <!-- SIDEBAR / HEADER -->
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">F</div>
+
+      <div>
+        <strong>FinTrack</strong>
+        <span>Personal finance</span>
+      </div>
+    </div>
+
+    <button id="newTransactionTop" class="top-add">
+      + Nuevo movimiento
+    </button>
+
+  </header>
+
+
+  <main class="app">
+
+    <!-- BIENVENIDA -->
+
+    <section class="welcome">
+
+      <div>
+        <p class="eyebrow">DASHBOARD</p>
+
+        <h1>
+          Tu dinero,
+          <span>más claro.</span>
+        </h1>
+
+        <p>
+          Controla ingresos y gastos desde un único lugar.
+          Los datos se guardan únicamente en este dispositivo.
+        </p>
+      </div>
+
+      <div class="welcome-actions">
+
+        <button id="newTransaction" class="primary-button">
+          + Añadir movimiento
+        </button>
+
+        <button id="loadDemo" class="secondary-button">
+          Cargar datos demo
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- RESUMEN -->
+
+    <section class="stats-grid">
+
+      <article class="stat-card balance-card">
+
+        <div class="stat-header">
+          <span>Saldo actual</span>
+          <span class="stat-icon">◎</span>
+        </div>
+
+        <strong id="balanceValue">
+          0,00 €
+        </strong
