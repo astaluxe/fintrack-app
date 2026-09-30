@@ -3467,25 +3467,6 @@ installButton.addEventListener(
     );
 
   }
-);
-  "click",
-async () => {
-
-  if (!installPrompt) return;
-
-  installPrompt.prompt();
-
-  await installPrompt.userChoice;
-
-  installPrompt =
-    null;
-
-  installButton.classList.add(
-    "hidden"
-  );
-
-}
-);
 
 
 // ==========================================
