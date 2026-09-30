@@ -3,30 +3,118 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#0b0d12">
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  >
 
   <title>FinTrack | Finanzas personales</title>
 
   <meta
     name="description"
-    content="Aplicación demostrativa para gestionar ingresos y gastos."
+    content="Aplicación demostrativa de gestión financiera personal."
   >
 
-  <link rel="stylesheet" href="style.css?v=2">
+  <link
+    rel="manifest"
+    href="manifest.webmanifest"
+  >
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=6"
+  >
 </head>
 
+
 <body>
+
+
+<!-- ===============================
+     HEADER
+=============================== -->
 
 <header class="app-header">
 
   <div class="container header-content">
 
-    <a href="#" class="logo">
-      FIN<span>TRACK</span>
-    </a>
+    <button
+      class="logo-button"
+      data-view-target="dashboard"
+      aria-label="Ir al panel"
+    >
+      <span class="logo-icon">F</span>
 
-    <div class="version">
-      V2 · Local
+      <span class="logo">
+        FIN<span>TRACK</span>
+      </span>
+    </button>
+
+
+    <nav class="desktop-nav">
+
+      <button
+        class="nav-tab active"
+        data-view-target="dashboard"
+      >
+        Panel
+      </button>
+
+      <button
+        class="nav-tab"
+        data-view-target="budgets"
+      >
+        Presupuestos
+      </button>
+
+      <button
+        class="nav-tab"
+        data-view-target="goals"
+      >
+        Objetivos
+      </button>
+
+      <button
+        class="nav-tab"
+        data-view-target="recurring"
+      >
+        Recurrentes
+      </button>
+
+    </nav>
+
+
+    <div class="header-actions">
+
+      <button
+        id="themeToggle"
+        class="icon-button"
+        aria-label="Cambiar tema"
+      >
+        ☾
+      </button>
+
+      <button
+        class="icon-button"
+        data-view-target="settings"
+        aria-label="Configuración"
+      >
+        ⚙
+      </button>
+
     </div>
 
   </div>
@@ -34,10 +122,19 @@
 </header>
 
 
+
 <main class="container app">
 
 
-  <!-- CABECERA -->
+<!-- ===============================
+     DASHBOARD
+=============================== -->
+
+<section
+  class="view active"
+  data-view="dashboard"
+>
+
 
   <section class="welcome">
 
@@ -53,20 +150,22 @@
       </h1>
 
       <p>
-        Registra, edita y analiza tus movimientos
+        Registra, organiza y analiza tus movimientos
         directamente desde tu dispositivo.
       </p>
 
     </div>
 
+
     <button
       id="demoButton"
       class="secondary-button"
     >
-      Cargar datos demo
+      Cargar demo
     </button>
 
   </section>
+
 
 
   <!-- RESUMEN -->
@@ -75,9 +174,7 @@
 
     <article class="summary-card balance-card">
 
-      <span>
-        Saldo actual
-      </span>
+      <span>Saldo</span>
 
       <strong id="balanceValue">
         0,00 €
@@ -92,9 +189,7 @@
 
     <article class="summary-card">
 
-      <span>
-        Ingresos
-      </span>
+      <span>Ingresos</span>
 
       <strong
         id="incomeValue"
@@ -112,9 +207,7 @@
 
     <article class="summary-card">
 
-      <span>
-        Gastos
-      </span>
+      <span>Gastos</span>
 
       <strong
         id="expenseValue"
@@ -132,16 +225,14 @@
 
     <article class="summary-card">
 
-      <span>
-        Ahorro
-      </span>
+      <span>Tasa de ahorro</span>
 
       <strong id="savingValue">
         0 %
       </strong>
 
       <small>
-        Sobre tus ingresos
+        Sobre ingresos
       </small>
 
     </article>
@@ -149,36 +240,24 @@
   </section>
 
 
-  <!-- APP PRINCIPAL -->
+
+  <!-- FORMULARIO + MOVIMIENTOS -->
 
   <section class="dashboard-grid">
 
 
-    <!-- FORMULARIO -->
-
     <aside class="panel add-panel">
 
-      <div class="panel-heading">
+      <p class="eyebrow">
+        MOVIMIENTO
+      </p>
 
-        <div>
-
-          <p class="eyebrow">
-            MOVIMIENTO
-          </p>
-
-          <h2 id="formTitle">
-            Añadir operación
-          </h2>
-
-        </div>
-
-      </div>
+      <h2 id="formTitle">
+        Añadir operación
+      </h2>
 
 
       <form id="transactionForm">
-
-
-        <!-- TIPO -->
 
         <div class="type-selector">
 
@@ -201,8 +280,6 @@
         </div>
 
 
-        <!-- CONCEPTO -->
-
         <label>
 
           Concepto
@@ -217,8 +294,6 @@
 
         </label>
 
-
-        <!-- CANTIDAD -->
 
         <label>
 
@@ -242,13 +317,14 @@
         </label>
 
 
-        <!-- CATEGORÍA -->
-
         <label>
 
           Categoría
 
-          <select id="category" required>
+          <select
+            id="category"
+            required
+          >
 
             <option value="Comida">
               🍔 Comida
@@ -287,8 +363,6 @@
         </label>
 
 
-        <!-- FECHA -->
-
         <label>
 
           Fecha
@@ -314,7 +388,7 @@
         <button
           id="cancelEdit"
           type="button"
-          class="cancel-button hidden"
+          class="danger-outline hidden"
         >
           Cancelar edición
         </button>
@@ -325,9 +399,7 @@
 
 
 
-    <!-- MOVIMIENTOS -->
-
-    <section class="panel transactions-panel">
+    <section class="panel">
 
       <div class="panel-heading">
 
@@ -343,6 +415,7 @@
 
         </div>
 
+
         <span
           id="transactionCount"
           class="count"
@@ -353,14 +426,12 @@
       </div>
 
 
-      <!-- FILTROS -->
-
       <div class="filters">
 
         <input
           id="searchInput"
           type="search"
-          placeholder="Buscar movimiento..."
+          placeholder="Buscar..."
         >
 
 
@@ -384,39 +455,25 @@
         <select id="categoryFilter">
 
           <option value="all">
-            Todas las categorías
+            Categorías
           </option>
 
-          <option value="Comida">
-            Comida
-          </option>
+          <option>Comida</option>
+          <option>Transporte</option>
+          <option>Compras</option>
+          <option>Ocio</option>
+          <option>Estudios</option>
+          <option>Salud</option>
+          <option>Ingresos</option>
+          <option>Otros</option>
 
-          <option value="Transporte">
-            Transporte
-          </option>
+        </select>
 
-          <option value="Compras">
-            Compras
-          </option>
 
-          <option value="Ocio">
-            Ocio
-          </option>
+        <select id="monthFilter">
 
-          <option value="Estudios">
-            Estudios
-          </option>
-
-          <option value="Salud">
-            Salud
-          </option>
-
-          <option value="Ingresos">
-            Ingresos
-          </option>
-
-          <option value="Otros">
-            Otros
+          <option value="all">
+            Todos los meses
           </option>
 
         </select>
@@ -441,12 +498,11 @@
         </div>
 
         <h3>
-          Todavía no hay movimientos
+          No hay movimientos
         </h3>
 
         <p>
-          Añade una operación o carga datos
-          de demostración para probar FinTrack.
+          Añade una operación o carga los datos demo.
         </p>
 
       </div>
@@ -457,30 +513,20 @@
 
 
 
-  <!-- ESTADÍSTICAS -->
+  <!-- ANALÍTICA -->
 
   <section class="analytics-grid">
 
 
-    <!-- CATEGORÍAS -->
+    <article class="panel">
 
-    <article class="panel category-panel">
+      <p class="eyebrow">
+        ESTE MES
+      </p>
 
-      <div class="panel-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            ANÁLISIS
-          </p>
-
-          <h2>
-            Gastos por categoría
-          </h2>
-
-        </div>
-
-      </div>
+      <h2>
+        Gastos por categoría
+      </h2>
 
 
       <div
@@ -494,145 +540,721 @@
         id="categoryEmpty"
         class="mini-empty"
       >
-        Añade gastos para ver su distribución.
+        Todavía no hay gastos este mes.
       </div>
 
     </article>
 
 
 
-    <!-- INSIGHT -->
-
-    <article class="panel insight-panel">
+    <article class="panel">
 
       <p class="eyebrow">
-        RESUMEN
+        ÚLTIMOS 6 MESES
       </p>
 
       <h2>
-        Tu mayor gasto
+        Evolución
       </h2>
 
-
-      <div class="top-category">
-
-        <div
-          id="topCategoryIcon"
-          class="top-category-icon"
-        >
-          —
-        </div>
-
-        <div>
-
-          <strong id="topCategoryName">
-            Sin datos
-          </strong>
-
-          <span id="topCategoryAmount">
-            0,00 €
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="insight-divider">
-      </div>
-
-
-      <div class="insight-stat">
-
-        <span>
-          Número de gastos
-        </span>
-
-        <strong id="expenseCount">
-          0
-        </strong>
-
-      </div>
-
-
-      <div class="insight-stat">
-
-        <span>
-          Gasto medio
-        </span>
-
-        <strong id="averageExpense">
-          0,00 €
-        </strong>
-
-      </div>
-
-
-      <div class="insight-message">
-
-        <strong>
-          FinTrack V2
-        </strong>
-
-        <p>
-          Ahora la aplicación analiza automáticamente
-          cómo se distribuyen tus gastos.
-        </p>
-
+      <div
+        id="monthlyChart"
+        class="monthly-chart"
+      >
       </div>
 
     </article>
 
   </section>
 
+</section>
 
 
-  <!-- PRIVACIDAD -->
 
-  <section class="privacy-note">
+<!-- ===============================
+     PRESUPUESTOS
+=============================== -->
 
-    <strong>
-      🔒 Todo permanece en este dispositivo.
-    </strong>
+<section
+  class="view"
+  data-view="budgets"
+>
 
-    <p>
-      FinTrack Demo utiliza localStorage.
-      No conecta con bancos ni transmite información financiera.
+  <div class="page-heading">
+
+    <p class="eyebrow">
+      PLANIFICACIÓN
     </p>
 
+    <h1>
+      Presupuestos mensuales
+    </h1>
+
+    <p>
+      Decide cuánto quieres gastar en cada categoría
+      y FinTrack calculará el progreso automáticamente.
+    </p>
+
+  </div>
+
+
+  <section class="two-column">
+
+
+    <aside class="panel">
+
+      <h2>
+        Crear presupuesto
+      </h2>
+
+
+      <form id="budgetForm">
+
+        <label>
+
+          Categoría
+
+          <select id="budgetCategory">
+
+            <option>Comida</option>
+            <option>Transporte</option>
+            <option>Compras</option>
+            <option>Ocio</option>
+            <option>Estudios</option>
+            <option>Salud</option>
+            <option>Otros</option>
+
+          </select>
+
+        </label>
+
+
+        <label>
+
+          Límite mensual
+
+          <div class="money-input">
+
+            <input
+              id="budgetLimit"
+              type="number"
+              min="1"
+              step="1"
+              required
+            >
+
+            <span>€</span>
+
+          </div>
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+        >
+          Guardar presupuesto
+        </button>
+
+      </form>
+
+    </aside>
+
+
+    <section class="panel">
+
+      <div class="panel-heading">
+
+        <div>
+
+          <p class="eyebrow">
+            MES ACTUAL
+          </p>
+
+          <h2>
+            Tus límites
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="budgetList"
+        class="cards-list"
+      >
+      </div>
+
+
+      <div
+        id="budgetEmpty"
+        class="mini-empty"
+      >
+        Todavía no has creado presupuestos.
+      </div>
+
+    </section>
+
   </section>
+
+</section>
+
+
+
+<!-- ===============================
+     OBJETIVOS
+=============================== -->
+
+<section
+  class="view"
+  data-view="goals"
+>
+
+  <div class="page-heading">
+
+    <p class="eyebrow">
+      AHORRO
+    </p>
+
+    <h1>
+      Objetivos
+    </h1>
+
+    <p>
+      Crea metas y registra cuánto has conseguido ahorrar.
+    </p>
+
+  </div>
+
+
+  <section class="two-column">
+
+
+    <aside class="panel">
+
+      <h2>
+        Nuevo objetivo
+      </h2>
+
+
+      <form id="goalForm">
+
+        <label>
+
+          Nombre
+
+          <input
+            id="goalName"
+            type="text"
+            maxlength="40"
+            placeholder="Ej. Nuevo ordenador"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Objetivo
+
+          <div class="money-input">
+
+            <input
+              id="goalTarget"
+              type="number"
+              min="1"
+              step="1"
+              required
+            >
+
+            <span>€</span>
+
+          </div>
+
+        </label>
+
+
+        <label>
+
+          Ya ahorrado
+
+          <div class="money-input">
+
+            <input
+              id="goalSaved"
+              type="number"
+              min="0"
+              step="1"
+              value="0"
+            >
+
+            <span>€</span>
+
+          </div>
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+        >
+          Crear objetivo
+        </button>
+
+      </form>
+
+    </aside>
+
+
+    <section class="panel">
+
+      <h2>
+        Mis objetivos
+      </h2>
+
+
+      <div
+        id="goalList"
+        class="cards-list"
+      >
+      </div>
+
+
+      <div
+        id="goalEmpty"
+        class="mini-empty"
+      >
+        Todavía no tienes objetivos.
+      </div>
+
+    </section>
+
+  </section>
+
+</section>
+
+
+
+<!-- ===============================
+     RECURRENTES
+=============================== -->
+
+<section
+  class="view"
+  data-view="recurring"
+>
+
+  <div class="page-heading">
+
+    <p class="eyebrow">
+      AUTOMATIZACIÓN
+    </p>
+
+    <h1>
+      Movimientos recurrentes
+    </h1>
+
+    <p>
+      Guarda operaciones que se repiten cada mes y
+      añádelas con un solo toque.
+    </p>
+
+  </div>
+
+
+  <section class="two-column">
+
+
+    <aside class="panel">
+
+      <h2>
+        Nuevo recurrente
+      </h2>
+
+
+      <form id="recurringForm">
+
+        <label>
+
+          Tipo
+
+          <select id="recurringType">
+
+            <option value="expense">
+              Gasto
+            </option>
+
+            <option value="income">
+              Ingreso
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <label>
+
+          Concepto
+
+          <input
+            id="recurringDescription"
+            type="text"
+            maxlength="40"
+            placeholder="Ej. Suscripción"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Cantidad
+
+          <div class="money-input">
+
+            <input
+              id="recurringAmount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              required
+            >
+
+            <span>€</span>
+
+          </div>
+
+        </label>
+
+
+        <label>
+
+          Categoría
+
+          <select id="recurringCategory">
+
+            <option>Comida</option>
+            <option>Transporte</option>
+            <option>Compras</option>
+            <option>Ocio</option>
+            <option>Estudios</option>
+            <option>Salud</option>
+            <option>Ingresos</option>
+            <option>Otros</option>
+
+          </select>
+
+        </label>
+
+
+        <label>
+
+          Día del mes
+
+          <input
+            id="recurringDay"
+            type="number"
+            min="1"
+            max="31"
+            value="1"
+            required
+          >
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+        >
+          Guardar recurrente
+        </button>
+
+      </form>
+
+    </aside>
+
+
+    <section class="panel">
+
+      <h2>
+        Operaciones recurrentes
+      </h2>
+
+
+      <div
+        id="recurringList"
+        class="cards-list"
+      >
+      </div>
+
+
+      <div
+        id="recurringEmpty"
+        class="mini-empty"
+      >
+        No tienes movimientos recurrentes.
+      </div>
+
+    </section>
+
+  </section>
+
+</section>
+
+
+
+<!-- ===============================
+     CONFIGURACIÓN
+=============================== -->
+
+<section
+  class="view"
+  data-view="settings"
+>
+
+  <div class="page-heading">
+
+    <p class="eyebrow">
+      FINTRACK
+    </p>
+
+    <h1>
+      Configuración
+    </h1>
+
+    <p>
+      Privacidad, copias de seguridad y funcionamiento de la app.
+    </p>
+
+  </div>
+
+
+  <section class="settings-grid">
+
+
+    <article class="panel setting-card">
+
+      <span class="setting-icon">
+        ◐
+      </span>
+
+      <h2>
+        Apariencia
+      </h2>
+
+      <p>
+        Cambia entre modo oscuro y claro.
+      </p>
+
+      <button
+        id="settingsThemeButton"
+        class="secondary-button"
+      >
+        Cambiar tema
+      </button>
+
+    </article>
+
+
+
+    <article class="panel setting-card">
+
+      <span class="setting-icon">
+        ↓
+      </span>
+
+      <h2>
+        Copia de seguridad
+      </h2>
+
+      <p>
+        Exporta todos tus datos en un archivo JSON.
+      </p>
+
+      <button
+        id="exportButton"
+        class="secondary-button"
+      >
+        Exportar datos
+      </button>
+
+    </article>
+
+
+
+    <article class="panel setting-card">
+
+      <span class="setting-icon">
+        ↑
+      </span>
+
+      <h2>
+        Restaurar
+      </h2>
+
+      <p>
+        Importa una copia de seguridad de FinTrack.
+      </p>
+
+      <button
+        id="importButton"
+        class="secondary-button"
+      >
+        Importar datos
+      </button>
+
+      <input
+        id="importFile"
+        type="file"
+        accept=".json,application/json"
+        hidden
+      >
+
+    </article>
+
+
+
+    <article class="panel setting-card">
+
+      <span class="setting-icon">
+        ⬡
+      </span>
+
+      <h2>
+        Instalar aplicación
+      </h2>
+
+      <p id="pwaStatus">
+        Preparando funcionamiento offline…
+      </p>
+
+      <button
+        id="installButton"
+        class="secondary-button hidden"
+      >
+        Instalar FinTrack
+      </button>
+
+    </article>
+
+
+
+    <article class="panel setting-card danger-card">
+
+      <span class="setting-icon">
+        !
+      </span>
+
+      <h2>
+        Borrar datos
+      </h2>
+
+      <p>
+        Elimina movimientos, presupuestos,
+        objetivos y recurrentes.
+      </p>
+
+      <button
+        id="clearAllButton"
+        class="danger-button"
+      >
+        Borrar todo
+      </button>
+
+    </article>
+
+
+    <article class="panel setting-card">
+
+      <span class="setting-icon">
+        🔒
+      </span>
+
+      <h2>
+        Privacidad
+      </h2>
+
+      <p>
+        FinTrack no conecta con bancos.
+        Los datos permanecen en tu dispositivo.
+      </p>
+
+    </article>
+
+  </section>
+
+</section>
 
 
 </main>
 
 
 
-<footer>
+<!-- ===============================
+     NAVEGACIÓN MÓVIL
+=============================== -->
 
-  <div class="container footer-content">
+<nav class="mobile-nav">
 
-    <span class="logo">
-      FIN<span>TRACK</span>
-    </span>
+  <button
+    class="mobile-tab active"
+    data-view-target="dashboard"
+  >
+    <span>⌂</span>
+    Panel
+  </button>
 
-    <p>
-      Proyecto demostrativo de Astaluxe Studio
-    </p>
+  <button
+    class="mobile-tab"
+    data-view-target="budgets"
+  >
+    <span>▤</span>
+    Límites
+  </button>
 
-  </div>
+  <button
+    class="mobile-tab"
+    data-view-target="goals"
+  >
+    <span>◎</span>
+    Metas
+  </button>
 
-</footer>
+  <button
+    class="mobile-tab"
+    data-view-target="recurring"
+  >
+    <span>↻</span>
+    Fijos
+  </button>
+
+  <button
+    class="mobile-tab"
+    data-view-target="settings"
+  >
+    <span>⚙</span>
+    Ajustes
+  </button>
+
+</nav>
+
 
 
 <div
   id="toast"
   class="toast"
 >
-  Movimiento guardado ✓
 </div>
 
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=6"></script>
 
 </body>
 
