@@ -1,18 +1,18 @@
-const CACHE_NAME = "fintrack-v11";
+const CACHE_NAME = "fintrack-v12";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css?v=11",
   "./script.js?v=11",
-  "./manifest.webmanifest?v=11",
+  "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png"
 ];
 
 
 /* =========================
-   INSTALACIÓN
+   INSTALAR SERVICE WORKER
 ========================= */
 
 self.addEventListener(
@@ -20,22 +20,41 @@ self.addEventListener(
   event => {
 
     event.waitUntil(
-
       caches
         .open(CACHE_NAME)
 
         .then(
-          cache =>
-            cache.addAll(
-              APP_SHELL
-            )
+          async cache => {
+
+            for (
+              const file of APP_SHELL
+            ) {
+
+              try {
+
+                await cache.add(file);
+
+              }
+
+              catch (error) {
+
+                console.warn(
+                  "No se pudo cachear:",
+                  file,
+                  error
+                );
+
+              }
+
+            }
+
+          }
         )
 
         .then(
           () =>
             self.skipWaiting()
         )
-
     );
 
   }
@@ -43,7 +62,8 @@ self.addEventListener(
 
 
 /* =========================
-   ACTIVACIÓN
+   ACTIVAR Y BORRAR CACHÉS
+   ANTIGUAS
 ========================= */
 
 self.addEventListener(
@@ -104,13 +124,79 @@ self.addEventListener(
       event.request.method !==
       "GET"
     ) {
+
       return;
+
     }
 
 
-    /*
-      PÁGINAS HTML
-    */
+    const url =
+      new URL(
+        event.request.url
+      );
+
+
+    /* =====================
+       MANIFEST
+       SIEMPRE INTENTA RED
+    ===================== */
+
+    if (
+      url.pathname.endsWith(
+        "manifest.webmanifest"
+      )
+    ) {
+
+      event.respondWith(
+
+        fetch(
+          event.request
+        )
+
+          .then(
+            response => {
+
+              const copy =
+                response.clone();
+
+
+              caches
+                .open(
+                  CACHE_NAME
+                )
+
+                .then(
+                  cache =>
+                    cache.put(
+                      event.request,
+                      copy
+                    )
+                );
+
+
+              return response;
+
+            }
+          )
+
+          .catch(
+            () =>
+              caches.match(
+                event.request
+              )
+          )
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =====================
+       NAVEGACIÓN HTML
+    ===================== */
 
     if (
       event.request.mode ===
@@ -164,9 +250,9 @@ self.addEventListener(
     }
 
 
-    /*
-      CSS, JS, ICONOS, ETC.
-    */
+    /* =====================
+       CSS / JS / ICONOS
+    ===================== */
 
     event.respondWith(
 
@@ -179,7 +265,9 @@ self.addEventListener(
           cached => {
 
             if (cached) {
+
               return cached;
+
             }
 
 
@@ -189,6 +277,17 @@ self.addEventListener(
 
               .then(
                 response => {
+
+                  if (
+                    !response
+                    ||
+                    response.status !== 200
+                  ) {
+
+                    return response;
+
+                  }
+
 
                   const copy =
                     response.clone();
