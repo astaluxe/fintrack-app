@@ -3402,7 +3402,7 @@ if (
   navigator
     .serviceWorker
     .register(
-      "./script.js?v=6&sw=1"
+      "./sw.js?v=7"
     )
     .then(
       () => {
