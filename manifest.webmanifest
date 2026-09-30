@@ -1,1 +1,26 @@
-
+{
+  "id": "/fintrack-app/",
+  "name": "FinTrack",
+  "short_name": "FinTrack",
+  "description": "Aplicación de gestión financiera personal.",
+  "start_url": "/fintrack-app/",
+  "scope": "/fintrack-app/",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#775cff",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/fintrack-app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/fintrack-app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
