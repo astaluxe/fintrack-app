@@ -1,11 +1,418 @@
-const STORAGE_KEY =
-  "fintrack-transactions-v1";
+/* ==========================================
+   FINTRACK V6
+   APP + SERVICE WORKER
+========================================== */
+
+
+// ==========================================
+// SERVICE WORKER
+// El mismo archivo sirve también para offline
+// ==========================================
+
+if (typeof document === "undefined") {
+
+  const CACHE_NAME =
+    "fintrack-v6";
+
+
+  const ICON_192 =
+    "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACtklEQVR42u3cIU5DQRSG0XmTuqam3QeaXVTgsAgEXQSLKJLgcIR0AwRLWEstwRVRiSAV783Q/5ykng73652XNB3mi+WhQKjqCBAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAAUCHZuf2hjbrvf/qyLa71dm8l+G//y6QgRdEXACGXgxxARh6McQ+BBt+19PIDWDwbYPYDWD4bYPIDWDwbYPYDWD4bYPYAAy/CGIDMPwiiA3A8IsgNgDDT+s5qIaf5Ah8HZpoNal2bIHmARh+epoPVyBcgXz6k7oFquEnOQJXIFyBQACuPwReg2wAbAAQgOsPgdcgGwAbAAQAAnD/J+s5wAbABgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAoDWZo7gNNd3pVxc9vv3fX+Vcn/r/2QDgABAACAAEAAIAAQAAgABIABI5asQE3p5LOXz3TnYACAAEAAIAAQAAgABgABAACAAEACMwneBJnR1c3yN5fWplI8352wDgABAACAAEAAIAAQAAgABIABHQDJfhZiQn0WxAUAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACgD/4XaATPT8cX9gAIAAQAAjgt+1u5YTpeo5sAGwAEAAIwHMAOfd/GwAbwBEgANcgAq8/NgA2gCNAAK5BBF5/Jt8AIqC3OXEFwhXIFiDx07/ZBhABvcyFKxCuQLYAiZ/+zTeACGg9BzX5zZM9/N08A4jA8EcHIALDHx+ACAx/C8N8sTz0eEib9d6kGPysDWAbGH4bwDYw+DaAbWD4bQAbwdALQAyGXgCCMPACgNCHYBAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAABgAAg0w+tz5rOe4Ue9AAAAABJRU5ErkJggg==";
+
+
+  const ICON_512 =
+    "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";
+
+
+  function base64ToBytes(base64) {
+
+    const binary =
+      atob(base64);
+
+    const bytes =
+      new Uint8Array(binary.length);
+
+    for (
+      let i = 0;
+      i < binary.length;
+      i++
+    ) {
+
+      bytes[i] =
+        binary.charCodeAt(i);
+
+    }
+
+    return bytes;
+
+  }
+
+
+  self.addEventListener(
+    "install",
+    event => {
+
+      event.waitUntil(
+
+        caches
+          .open(CACHE_NAME)
+          .then(
+            cache =>
+              cache.addAll([
+                "./",
+                "./index.html",
+                "./style.css?v=6",
+                "./script.js?v=6"
+              ])
+          )
+          .then(
+            () =>
+              self.skipWaiting()
+          )
+
+      );
+
+    }
+  );
+
+
+  self.addEventListener(
+    "activate",
+    event => {
+
+      event.waitUntil(
+
+        caches
+          .keys()
+          .then(
+            keys =>
+              Promise.all(
+
+                keys
+                  .filter(
+                    key =>
+                      key.startsWith(
+                        "fintrack-"
+                      )
+                      &&
+                      key !== CACHE_NAME
+                  )
+                  .map(
+                    key =>
+                      caches.delete(key)
+                  )
+
+              )
+          )
+          .then(
+            () =>
+              self.clients.claim()
+          )
+
+      );
+
+    }
+  );
+
+
+  self.addEventListener(
+    "fetch",
+    event => {
+
+      const url =
+        new URL(
+          event.request.url
+        );
+
+
+      if (
+        url.pathname.endsWith(
+          "manifest.webmanifest"
+        )
+      ) {
+
+        const manifest = {
+
+          name:
+            "FinTrack",
+
+          short_name:
+            "FinTrack",
+
+          description:
+            "Gestión financiera personal local",
+
+          start_url:
+            "./",
+
+          scope:
+            "./",
+
+          display:
+            "standalone",
+
+          background_color:
+            "#0b0d12",
+
+          theme_color:
+            "#775cff",
+
+          icons: [
+
+            {
+              src:
+                "icon-192.png",
+
+              sizes:
+                "192x192",
+
+              type:
+                "image/png"
+            },
+
+            {
+              src:
+                "icon-512.png",
+
+              sizes:
+                "512x512",
+
+              type:
+                "image/png"
+            }
+
+          ]
+
+        };
+
+
+        event.respondWith(
+
+          new Response(
+            JSON.stringify(
+              manifest
+            ),
+            {
+              headers: {
+                "Content-Type":
+                  "application/manifest+json"
+              }
+            }
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        url.pathname.endsWith(
+          "icon-192.png"
+        )
+      ) {
+
+        event.respondWith(
+
+          new Response(
+            base64ToBytes(
+              ICON_192
+            ),
+            {
+              headers: {
+                "Content-Type":
+                  "image/png"
+              }
+            }
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        url.pathname.endsWith(
+          "icon-512.png"
+        )
+      ) {
+
+        event.respondWith(
+
+          new Response(
+            base64ToBytes(
+              ICON_512
+            ),
+            {
+              headers: {
+                "Content-Type":
+                  "image/png"
+              }
+            }
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        event.request.method !==
+        "GET"
+      ) {
+
+        return;
+
+      }
+
+
+      event.respondWith(
+
+        fetch(event.request)
+
+          .then(
+            response => {
+
+              const copy =
+                response.clone();
+
+
+              caches
+                .open(CACHE_NAME)
+                .then(
+                  cache =>
+                    cache.put(
+                      event.request,
+                      copy
+                    )
+                );
+
+
+              return response;
+
+            }
+          )
+
+          .catch(
+            async () => {
+
+              const cached =
+                await caches.match(
+                  event.request
+                );
+
+
+              if (cached) {
+
+                return cached;
+
+              }
+
+
+              if (
+                event.request.mode ===
+                "navigate"
+              ) {
+
+                return caches.match(
+                  "./index.html"
+                );
+
+              }
+
+
+              return Response.error();
+
+            }
+          )
+
+      );
+
+    }
+  );
+
+}
+
+
+// ==========================================
+// APLICACIÓN
+// ==========================================
+
+else {
+
+
+const STORAGE = {
+
+  transactions:
+    "fintrack-transactions-v1",
+
+  budgets:
+    "fintrack-budgets-v6",
+
+  goals:
+    "fintrack-goals-v6",
+
+  recurring:
+    "fintrack-recurring-v6",
+
+  theme:
+    "fintrack-theme-v6"
+
+};
+
+
+
+function loadArray(key) {
+
+  try {
+
+    const value =
+      JSON.parse(
+        localStorage.getItem(key)
+      );
+
+    return Array.isArray(value)
+      ? value
+      : [];
+
+  }
+
+  catch {
+
+    return [];
+
+  }
+
+}
+
 
 
 let transactions =
-  JSON.parse(
-    localStorage.getItem(STORAGE_KEY)
-  ) || [];
+  loadArray(
+    STORAGE.transactions
+  );
+
+
+let budgets =
+  loadArray(
+    STORAGE.budgets
+  );
+
+
+let goals =
+  loadArray(
+    STORAGE.goals
+  );
+
+
+let recurring =
+  loadArray(
+    STORAGE.recurring
+  );
 
 
 let currentType =
@@ -15,118 +422,6 @@ let currentType =
 let editingId =
   null;
 
-
-
-// ========================================
-// ELEMENTOS
-// ========================================
-
-const form =
-  document.getElementById("transactionForm");
-
-const formTitle =
-  document.getElementById("formTitle");
-
-const submitButton =
-  document.getElementById("submitButton");
-
-const cancelEdit =
-  document.getElementById("cancelEdit");
-
-const descriptionInput =
-  document.getElementById("description");
-
-const amountInput =
-  document.getElementById("amount");
-
-const categoryInput =
-  document.getElementById("category");
-
-const dateInput =
-  document.getElementById("date");
-
-const transactionList =
-  document.getElementById("transactionList");
-
-const emptyState =
-  document.getElementById("emptyState");
-
-const countOutput =
-  document.getElementById("transactionCount");
-
-const balanceOutput =
-  document.getElementById("balanceValue");
-
-const incomeOutput =
-  document.getElementById("incomeValue");
-
-const expenseOutput =
-  document.getElementById("expenseValue");
-
-const savingOutput =
-  document.getElementById("savingValue");
-
-const typeButtons =
-  document.querySelectorAll(".type-button");
-
-const searchInput =
-  document.getElementById("searchInput");
-
-const typeFilter =
-  document.getElementById("typeFilter");
-
-const categoryFilter =
-  document.getElementById("categoryFilter");
-
-const demoButton =
-  document.getElementById("demoButton");
-
-const categoryChart =
-  document.getElementById("categoryChart");
-
-const categoryEmpty =
-  document.getElementById("categoryEmpty");
-
-const topCategoryIcon =
-  document.getElementById("topCategoryIcon");
-
-const topCategoryName =
-  document.getElementById("topCategoryName");
-
-const topCategoryAmount =
-  document.getElementById("topCategoryAmount");
-
-const expenseCount =
-  document.getElementById("expenseCount");
-
-const averageExpense =
-  document.getElementById("averageExpense");
-
-const toast =
-  document.getElementById("toast");
-
-
-
-// ========================================
-// FECHA
-// ========================================
-
-function today() {
-
-  return new Date()
-    .toISOString()
-    .split("T")[0];
-
-}
-
-dateInput.value =
-  today();
-
-
-
-// ========================================
-// EURO
-// ========================================
 
 const euro =
   new Intl.NumberFormat(
@@ -139,544 +434,472 @@ const euro =
 
 
 
-// ========================================
-// GUARDAR
-// ========================================
+function uid() {
 
-function saveTransactions() {
+  return (
+    Date.now().toString(36)
+    +
+    Math.random()
+      .toString(36)
+      .slice(2,8)
+  );
+
+}
+
+
+
+function today() {
+
+  return new Date()
+    .toISOString()
+    .split("T")[0];
+
+}
+
+
+
+function currentMonth() {
+
+  return today()
+    .slice(0,7);
+
+}
+
+
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+
+function saveAll() {
 
   localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(transactions)
+    STORAGE.transactions,
+    JSON.stringify(
+      transactions
+    )
+  );
+
+  localStorage.setItem(
+    STORAGE.budgets,
+    JSON.stringify(
+      budgets
+    )
+  );
+
+  localStorage.setItem(
+    STORAGE.goals,
+    JSON.stringify(
+      goals
+    )
+  );
+
+  localStorage.setItem(
+    STORAGE.recurring,
+    JSON.stringify(
+      recurring
+    )
   );
 
 }
 
 
-
-// ========================================
-// TOAST
-// ========================================
-
-function showToast(text) {
-
-  toast.textContent =
-    text;
-
-  toast.classList.add("show");
-
-  setTimeout(
-    () => {
-
-      toast.classList.remove("show");
-
-    },
-    1800
-  );
-
-}
-
-
-
-// ========================================
-// ICONOS
-// ========================================
 
 function categoryIcon(category) {
 
   const icons = {
 
     Comida: "🍔",
+
     Transporte: "🚗",
+
     Compras: "🛍️",
+
     Ocio: "🎮",
+
     Estudios: "📚",
+
     Salud: "❤️",
+
     Ingresos: "💰",
+
     Otros: "📦"
 
   };
 
-  return icons[category] || "📦";
+  return icons[category]
+    || "📦";
 
 }
 
 
 
-// ========================================
-// FECHA FORMATEADA
-// ========================================
+function formatDate(value) {
 
-function formatDate(dateString) {
-
-  const date =
-    new Date(
-      dateString +
-      "T00:00:00"
+  return new Date(
+    value + "T00:00:00"
+  )
+    .toLocaleDateString(
+      "es-ES",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      }
     );
 
-  return date.toLocaleDateString(
-    "es-ES",
-    {
-      day: "2-digit",
-      month: "short",
-      year: "numeric"
+}
+
+
+
+function monthName(value) {
+
+  const [
+    year,
+    month
+  ] =
+    value
+      .split("-")
+      .map(Number);
+
+
+  return new Date(
+    year,
+    month - 1,
+    1
+  )
+    .toLocaleDateString(
+      "es-ES",
+      {
+        month: "short",
+        year: "2-digit"
+      }
+    );
+
+}
+
+
+
+// ==========================================
+// TOAST
+// ==========================================
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+
+function showToast(text) {
+
+  toast.textContent =
+    text;
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    showToast.timer
+  );
+
+
+  showToast.timer =
+    setTimeout(
+      () =>
+        toast.classList.remove(
+          "show"
+        ),
+      1800
+    );
+
+}
+
+
+
+// ==========================================
+// NAVEGACIÓN
+// ==========================================
+
+const views =
+  document.querySelectorAll(
+    ".view"
+  );
+
+
+const navButtons =
+  document.querySelectorAll(
+    "[data-view-target]"
+  );
+
+
+function openView(name) {
+
+  views.forEach(
+    view => {
+
+      view.classList.toggle(
+        "active",
+        view.dataset.view === name
+      );
+
     }
   );
 
-}
 
+  document
+    .querySelectorAll(
+      ".nav-tab, .mobile-tab"
+    )
+    .forEach(
+      button => {
 
-
-// ========================================
-// RESUMEN
-// ========================================
-
-function updateSummary() {
-
-  const income =
-    transactions
-      .filter(
-        transaction =>
-          transaction.type === "income"
-      )
-      .reduce(
-        (total, transaction) =>
-          total + transaction.amount,
-        0
-      );
-
-
-  const expenses =
-    transactions
-      .filter(
-        transaction =>
-          transaction.type === "expense"
-      )
-      .reduce(
-        (total, transaction) =>
-          total + transaction.amount,
-        0
-      );
-
-
-  const balance =
-    income - expenses;
-
-
-  const savingRate =
-    income > 0
-      ?
-      (
-        (
-          income - expenses
-        ) /
-        income
-      ) * 100
-      :
-      0;
-
-
-  balanceOutput.textContent =
-    euro.format(balance);
-
-
-  incomeOutput.textContent =
-    euro.format(income);
-
-
-  expenseOutput.textContent =
-    euro.format(expenses);
-
-
-  savingOutput.textContent =
-    Math.round(savingRate)
-    +
-    " %";
-
-}
-
-
-
-// ========================================
-// ESTADÍSTICAS CATEGORÍAS
-// ========================================
-
-function updateCategoryAnalytics() {
-
-  const expenses =
-    transactions.filter(
-      transaction =>
-        transaction.type === "expense"
-    );
-
-
-  const totalExpenses =
-    expenses.reduce(
-      (total, transaction) =>
-        total + transaction.amount,
-      0
-    );
-
-
-  const categories =
-    {};
-
-
-  expenses.forEach(
-    transaction => {
-
-      if (
-        !categories[
-          transaction.category
-        ]
-      ) {
-
-        categories[
-          transaction.category
-        ] = 0;
+        button.classList.toggle(
+          "active",
+          button.dataset
+            .viewTarget === name
+        );
 
       }
+    );
 
 
-      categories[
-        transaction.category
-      ] +=
-        transaction.amount;
-
-    }
-  );
-
-
-  const sorted =
-    Object.entries(categories)
-      .sort(
-        (a, b) =>
-          b[1] - a[1]
-      );
-
-
-  categoryChart.innerHTML =
-    "";
-
-
-  categoryEmpty.style.display =
-    sorted.length
-      ? "none"
-      : "block";
-
-
-  sorted.forEach(
-    ([category, amount]) => {
-
-      const percentage =
-        totalExpenses > 0
-          ?
-          (
-            amount /
-            totalExpenses
-          ) * 100
-          :
-          0;
-
-
-      const row =
-        document.createElement("div");
-
-
-      row.className =
-        "category-row";
-
-
-      row.innerHTML = `
-
-        <div class="category-name">
-
-          ${categoryIcon(category)}
-          ${category}
-
-        </div>
-
-        <div class="category-track">
-
-          <div
-            class="category-fill"
-            style="width:${percentage}%"
-          >
-          </div>
-
-        </div>
-
-        <div class="category-amount">
-
-          ${euro.format(amount)}
-
-        </div>
-
-      `;
-
-
-      categoryChart
-        .appendChild(row);
-
-    }
-  );
-
-
-
-  if (sorted.length) {
-
-    const [category, amount] =
-      sorted[0];
-
-
-    topCategoryIcon.textContent =
-      categoryIcon(category);
-
-
-    topCategoryName.textContent =
-      category;
-
-
-    topCategoryAmount.textContent =
-      euro.format(amount);
-
-  }
-
-  else {
-
-    topCategoryIcon.textContent =
-      "—";
-
-
-    topCategoryName.textContent =
-      "Sin datos";
-
-
-    topCategoryAmount.textContent =
-      euro.format(0);
-
-  }
-
-
-
-  expenseCount.textContent =
-    expenses.length;
-
-
-
-  const average =
-    expenses.length
-      ?
-      totalExpenses /
-      expenses.length
-      :
-      0;
-
-
-  averageExpense.textContent =
-    euro.format(average);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
 }
 
 
 
-// ========================================
-// RENDER
-// ========================================
+navButtons.forEach(
+  button => {
 
-function renderTransactions() {
+    button.addEventListener(
+      "click",
+      () =>
+        openView(
+          button.dataset
+            .viewTarget
+        )
+    );
 
-  const search =
-    searchInput.value
-      .trim()
-      .toLowerCase();
-
-
-  const selectedType =
-    typeFilter.value;
-
-
-  const selectedCategory =
-    categoryFilter.value;
+  }
+);
 
 
 
-  const filtered =
-    transactions
-      .filter(
-        transaction => {
+// ==========================================
+// TEMA
+// ==========================================
 
-          const matchesSearch =
-            transaction
-              .description
-              .toLowerCase()
-              .includes(search);
-
-
-          const matchesType =
-            selectedType === "all"
-            ||
-            transaction.type ===
-            selectedType;
-
-
-          const matchesCategory =
-            selectedCategory ===
-            "all"
-            ||
-            transaction.category ===
-            selectedCategory;
-
-
-          return (
-            matchesSearch
-            &&
-            matchesType
-            &&
-            matchesCategory
-          );
-
-        }
-      )
-      .sort(
-        (a, b) =>
-          new Date(b.date)
-          -
-          new Date(a.date)
-      );
-
-
-
-  transactionList.innerHTML =
-    "";
-
-
-  emptyState.style.display =
-    filtered.length
-      ? "none"
-      : "flex";
-
-
-
-  filtered.forEach(
-    transaction => {
-
-      const item =
-        document.createElement("article");
-
-
-      item.className =
-        "transaction-item";
-
-
-      const sign =
-        transaction.type ===
-        "income"
-          ? "+"
-          : "−";
-
-
-      item.innerHTML = `
-
-        <div class="transaction-icon">
-
-          ${categoryIcon(
-            transaction.category
-          )}
-
-        </div>
-
-
-        <div class="transaction-main">
-
-          <h3>
-            ${transaction.description}
-          </h3>
-
-
-          <div class="transaction-meta">
-
-            <span>
-              ${transaction.category}
-            </span>
-
-            <span>
-              ${formatDate(
-                transaction.date
-              )}
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="transaction-amount
-          ${transaction.type}"
-        >
-
-          ${sign}
-          ${euro.format(
-            transaction.amount
-          )}
-
-        </div>
-
-
-        <button
-          class="edit-button"
-          data-id="${transaction.id}"
-          aria-label="Editar"
-        >
-          ✎
-        </button>
-
-
-        <button
-          class="delete-button"
-          data-id="${transaction.id}"
-          aria-label="Eliminar"
-        >
-          ✕
-        </button>
-
-      `;
-
-
-      transactionList
-        .appendChild(item);
-
-    }
+const themeToggle =
+  document.getElementById(
+    "themeToggle"
   );
 
 
-
-  const total =
-    transactions.length;
-
-
-  countOutput.textContent =
-    total === 1
-      ?
-      "1 movimiento"
-      :
-      `${total} movimientos`;
+const settingsThemeButton =
+  document.getElementById(
+    "settingsThemeButton"
+  );
 
 
+function applyTheme(theme) {
 
-  updateSummary();
+  document.body.dataset.theme =
+    theme;
 
-  updateCategoryAnalytics();
+
+  localStorage.setItem(
+    STORAGE.theme,
+    theme
+  );
+
+
+  themeToggle.textContent =
+    theme === "dark"
+      ? "☀"
+      : "☾";
 
 }
 
 
 
-// ========================================
-// CAMBIAR TIPO
-// ========================================
+let theme =
+  localStorage.getItem(
+    STORAGE.theme
+  );
+
+
+if (!theme) {
+
+  theme =
+    window.matchMedia(
+      "(prefers-color-scheme: light)"
+    ).matches
+      ? "light"
+      : "dark";
+
+}
+
+
+applyTheme(theme);
+
+
+function toggleTheme() {
+
+  theme =
+    document.body.dataset
+      .theme === "dark"
+      ? "light"
+      : "dark";
+
+
+  applyTheme(theme);
+
+}
+
+
+themeToggle.addEventListener(
+  "click",
+  toggleTheme
+);
+
+
+settingsThemeButton
+  .addEventListener(
+    "click",
+    toggleTheme
+  );
+
+
+
+// ==========================================
+// TRANSACCIONES
+// ==========================================
+
+const form =
+  document.getElementById(
+    "transactionForm"
+  );
+
+
+const formTitle =
+  document.getElementById(
+    "formTitle"
+  );
+
+
+const submitButton =
+  document.getElementById(
+    "submitButton"
+  );
+
+
+const cancelEdit =
+  document.getElementById(
+    "cancelEdit"
+  );
+
+
+const descriptionInput =
+  document.getElementById(
+    "description"
+  );
+
+
+const amountInput =
+  document.getElementById(
+    "amount"
+  );
+
+
+const categoryInput =
+  document.getElementById(
+    "category"
+  );
+
+
+const dateInput =
+  document.getElementById(
+    "date"
+  );
+
+
+const typeButtons =
+  document.querySelectorAll(
+    ".type-button"
+  );
+
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+
+const typeFilter =
+  document.getElementById(
+    "typeFilter"
+  );
+
+
+const categoryFilter =
+  document.getElementById(
+    "categoryFilter"
+  );
+
+
+const monthFilter =
+  document.getElementById(
+    "monthFilter"
+  );
+
+
+const transactionList =
+  document.getElementById(
+    "transactionList"
+  );
+
+
+const emptyState =
+  document.getElementById(
+    "emptyState"
+  );
+
+
+const transactionCount =
+  document.getElementById(
+    "transactionCount"
+  );
+
 
 function setType(type) {
 
@@ -724,13 +947,10 @@ typeButtons.forEach(
 
     button.addEventListener(
       "click",
-      () => {
-
+      () =>
         setType(
           button.dataset.type
-        );
-
-      }
+        )
     );
 
   }
@@ -738,40 +958,29 @@ typeButtons.forEach(
 
 
 
-// ========================================
-// RESET FORM
-// ========================================
-
-function resetForm() {
+function resetTransactionForm() {
 
   form.reset();
-
 
   editingId =
     null;
 
-
   formTitle.textContent =
     "Añadir operación";
 
-
   submitButton.textContent =
     "Añadir movimiento";
-
 
   cancelEdit.classList.add(
     "hidden"
   );
 
-
   dateInput.value =
     today();
-
 
   setType(
     "expense"
   );
-
 
   categoryInput.value =
     "Comida";
@@ -779,10 +988,6 @@ function resetForm() {
 }
 
 
-
-// ========================================
-// GUARDAR / EDITAR
-// ========================================
 
 form.addEventListener(
   "submit",
@@ -813,37 +1018,40 @@ form.addEventListener(
     }
 
 
+    const data = {
+
+      description,
+
+      amount,
+
+      category:
+        categoryInput.value,
+
+      date:
+        dateInput.value,
+
+      type:
+        currentType
+
+    };
+
 
     if (editingId) {
 
       const index =
         transactions.findIndex(
-          transaction =>
-            transaction.id ===
-            editingId
+          item =>
+            item.id === editingId
         );
 
 
-      if (
-        index !== -1
-      ) {
+      if (index >= 0) {
 
         transactions[index] = {
 
           ...transactions[index],
 
-          description,
-
-          amount,
-
-          category:
-            categoryInput.value,
-
-          date:
-            dateInput.value,
-
-          type:
-            currentType
+          ...data
 
         };
 
@@ -860,22 +1068,9 @@ form.addEventListener(
 
       transactions.push({
 
-        id:
-          Date.now()
-            .toString(),
+        id: uid(),
 
-        description,
-
-        amount,
-
-        category:
-          categoryInput.value,
-
-        date:
-          dateInput.value,
-
-        type:
-          currentType
+        ...data
 
       });
 
@@ -887,49 +1082,47 @@ form.addEventListener(
     }
 
 
+    saveAll();
 
-    saveTransactions();
+    resetTransactionForm();
 
-    resetForm();
-
-    renderTransactions();
+    renderAll();
 
   }
 );
 
 
 
-// ========================================
-// EDITAR / BORRAR
-// ========================================
+cancelEdit.addEventListener(
+  "click",
+  resetTransactionForm
+);
+
+
 
 transactionList.addEventListener(
   "click",
   event => {
 
-    const editButton =
+    const edit =
       event.target.closest(
         ".edit-button"
       );
 
 
-    const deleteButton =
+    const remove =
       event.target.closest(
         ".delete-button"
       );
 
 
-
-    if (editButton) {
-
-      const id =
-        editButton.dataset.id;
-
+    if (edit) {
 
       const transaction =
         transactions.find(
-          transaction =>
-            transaction.id === id
+          item =>
+            item.id ===
+            edit.dataset.id
         );
 
 
@@ -937,29 +1130,21 @@ transactionList.addEventListener(
 
 
       editingId =
-        id;
+        transaction.id;
 
 
       descriptionInput.value =
         transaction.description;
 
-
       amountInput.value =
         transaction.amount;
-
-
-      categoryInput.value =
-        transaction.category;
-
 
       dateInput.value =
         transaction.date;
 
-
       setType(
         transaction.type
       );
-
 
       categoryInput.value =
         transaction.category;
@@ -968,10 +1153,8 @@ transactionList.addEventListener(
       formTitle.textContent =
         "Editar movimiento";
 
-
       submitButton.textContent =
         "Guardar cambios";
-
 
       cancelEdit.classList.remove(
         "hidden"
@@ -986,36 +1169,23 @@ transactionList.addEventListener(
     }
 
 
-
-    if (deleteButton) {
-
-      const id =
-        deleteButton.dataset.id;
-
+    if (remove) {
 
       transactions =
         transactions.filter(
-          transaction =>
-            transaction.id !== id
+          item =>
+            item.id !==
+            remove.dataset.id
         );
 
 
-      saveTransactions();
+      saveAll();
 
-      renderTransactions();
+      renderAll();
 
       showToast(
         "Movimiento eliminado"
       );
-
-
-      if (
-        editingId === id
-      ) {
-
-        resetForm();
-
-      }
 
     }
 
@@ -1024,151 +1194,753 @@ transactionList.addEventListener(
 
 
 
-// ========================================
-// CANCELAR EDICIÓN
-// ========================================
+function refreshMonthOptions() {
 
-cancelEdit.addEventListener(
-  "click",
-  resetForm
-);
+  const oldValue =
+    monthFilter.value;
 
 
+  const months =
+    [
+      ...new Set(
 
-// ========================================
-// FILTROS
-// ========================================
+        transactions
+          .map(
+            item =>
+              item.date
+                ?.slice(0,7)
+          )
+          .filter(Boolean)
+          .concat(
+            currentMonth()
+          )
 
-searchInput.addEventListener(
-  "input",
-  renderTransactions
-);
-
-
-typeFilter.addEventListener(
-  "change",
-  renderTransactions
-);
-
-
-categoryFilter.addEventListener(
-  "change",
-  renderTransactions
-);
+      )
+    ]
+      .sort()
+      .reverse();
 
 
-
-// ========================================
-// DATOS DEMO
-// ========================================
-
-demoButton.addEventListener(
-  "click",
-  () => {
-
-    const now =
-      new Date();
+  monthFilter.innerHTML =
+    `<option value="all">
+      Todos los meses
+    </option>`;
 
 
-    const date =
-      daysAgo => {
+  months.forEach(
+    month => {
 
-        const d =
-          new Date(now);
-
-
-        d.setDate(
-          d.getDate() - daysAgo
+      const option =
+        document.createElement(
+          "option"
         );
 
 
-        return d
-          .toISOString()
-          .split("T")[0];
-
-      };
+      option.value =
+        month;
 
 
+      option.textContent =
+        monthName(month);
 
-    transactions = [
 
-      {
-        id: "demo1",
-        description:
-          "Ingreso mensual",
-        amount: 850,
-        category:
-          "Ingresos",
-        date: date(10),
-        type: "income"
-      },
+      monthFilter.appendChild(
+        option
+      );
 
-      {
-        id: "demo2",
-        description:
-          "Supermercado",
-        amount: 54.20,
-        category:
-          "Comida",
-        date: date(2),
-        type: "expense"
-      },
+    }
+  );
 
-      {
-        id: "demo3",
-        description:
-          "Restaurante",
-        amount: 26.50,
-        category:
-          "Comida",
-        date: date(3),
-        type: "expense"
-      },
 
-      {
-        id: "demo4",
-        description:
-          "Transporte",
-        amount: 18.50,
-        category:
-          "Transporte",
-        date: date(4),
-        type: "expense"
-      },
+  if (
+    [...monthFilter.options]
+      .some(
+        option =>
+          option.value === oldValue
+      )
+  ) {
 
-      {
-        id: "demo5",
-        description:
-          "Videojuego",
-        amount: 29.99,
-        category:
-          "Ocio",
-        date: date(6),
-        type: "expense"
-      },
+    monthFilter.value =
+      oldValue;
 
-      {
-        id: "demo6",
-        description:
-          "Material de estudio",
-        amount: 22.40,
-        category:
-          "Estudios",
-        date: date(7),
-        type: "expense"
+  }
+
+}
+
+
+
+function renderTransactions() {
+
+  const search =
+    searchInput.value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    transactions
+
+      .filter(
+        item => {
+
+          return (
+
+            item.description
+              .toLowerCase()
+              .includes(search)
+
+            &&
+
+            (
+              typeFilter.value ===
+              "all"
+              ||
+              item.type ===
+              typeFilter.value
+            )
+
+            &&
+
+            (
+              categoryFilter.value ===
+              "all"
+              ||
+              item.category ===
+              categoryFilter.value
+            )
+
+            &&
+
+            (
+              monthFilter.value ===
+              "all"
+              ||
+              item.date
+                .startsWith(
+                  monthFilter.value
+                )
+            )
+
+          );
+
+        }
+      )
+
+      .sort(
+        (a,b) =>
+          new Date(b.date)
+          -
+          new Date(a.date)
+      );
+
+
+  transactionList.innerHTML =
+    "";
+
+
+  emptyState.style.display =
+    filtered.length
+      ? "none"
+      : "flex";
+
+
+  filtered.forEach(
+    item => {
+
+      const article =
+        document.createElement(
+          "article"
+        );
+
+
+      article.className =
+        "transaction-item";
+
+
+      const sign =
+        item.type === "income"
+          ? "+"
+          : "−";
+
+
+      article.innerHTML = `
+
+        <div class="transaction-icon">
+          ${categoryIcon(
+            item.category
+          )}
+        </div>
+
+        <div class="transaction-main">
+
+          <h3>
+            ${escapeHTML(
+              item.description
+            )}
+          </h3>
+
+          <div class="transaction-meta">
+
+            <span>
+              ${escapeHTML(
+                item.category
+              )}
+            </span>
+
+            <span>
+              ${formatDate(
+                item.date
+              )}
+            </span>
+
+          </div>
+
+        </div>
+
+        <div
+          class="transaction-amount
+          ${item.type}"
+        >
+          ${sign}${euro.format(
+            item.amount
+          )}
+        </div>
+
+        <button
+          class="edit-button"
+          data-id="${item.id}"
+          aria-label="Editar"
+        >
+          ✎
+        </button>
+
+        <button
+          class="delete-button"
+          data-id="${item.id}"
+          aria-label="Eliminar"
+        >
+          ✕
+        </button>
+
+      `;
+
+
+      transactionList
+        .appendChild(
+          article
+        );
+
+    }
+  );
+
+
+  transactionCount.textContent =
+    `${transactions.length} ${
+      transactions.length === 1
+        ? "movimiento"
+        : "movimientos"
+    }`;
+
+}
+
+
+
+// ==========================================
+// RESUMEN
+// ==========================================
+
+function renderSummary() {
+
+  const income =
+    transactions
+
+      .filter(
+        item =>
+          item.type === "income"
+      )
+
+      .reduce(
+        (sum,item) =>
+          sum + Number(item.amount),
+        0
+      );
+
+
+  const expenses =
+    transactions
+
+      .filter(
+        item =>
+          item.type === "expense"
+      )
+
+      .reduce(
+        (sum,item) =>
+          sum + Number(item.amount),
+        0
+      );
+
+
+  const balance =
+    income - expenses;
+
+
+  const savingRate =
+    income > 0
+      ?
+      (
+        balance /
+        income
+      ) * 100
+      :
+      0;
+
+
+  document
+    .getElementById(
+      "balanceValue"
+    )
+    .textContent =
+      euro.format(balance);
+
+
+  document
+    .getElementById(
+      "incomeValue"
+    )
+    .textContent =
+      euro.format(income);
+
+
+  document
+    .getElementById(
+      "expenseValue"
+    )
+    .textContent =
+      euro.format(expenses);
+
+
+  document
+    .getElementById(
+      "savingValue"
+    )
+    .textContent =
+      `${Math.round(
+        savingRate
+      )} %`;
+
+}
+
+
+
+// ==========================================
+// ANALÍTICA
+// ==========================================
+
+function renderCategoryChart() {
+
+  const chart =
+    document.getElementById(
+      "categoryChart"
+    );
+
+
+  const empty =
+    document.getElementById(
+      "categoryEmpty"
+    );
+
+
+  const month =
+    currentMonth();
+
+
+  const expenses =
+    transactions.filter(
+      item =>
+        item.type === "expense"
+        &&
+        item.date
+          .startsWith(month)
+    );
+
+
+  const totals = {};
+
+
+  expenses.forEach(
+    item => {
+
+      totals[item.category] =
+        (
+          totals[item.category]
+          || 0
+        )
+        +
+        Number(item.amount);
+
+    }
+  );
+
+
+  const sorted =
+    Object.entries(totals)
+      .sort(
+        (a,b) =>
+          b[1] - a[1]
+      );
+
+
+  chart.innerHTML =
+    "";
+
+
+  empty.style.display =
+    sorted.length
+      ? "none"
+      : "block";
+
+
+  const total =
+    sorted.reduce(
+      (sum,[,amount]) =>
+        sum + amount,
+      0
+    );
+
+
+  sorted.forEach(
+    ([category,amount]) => {
+
+      const percentage =
+        total
+          ?
+          (
+            amount /
+            total
+          ) * 100
+          :
+          0;
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "category-row";
+
+
+      row.innerHTML = `
+
+        <div>
+          ${categoryIcon(category)}
+          ${escapeHTML(category)}
+        </div>
+
+        <div class="category-track">
+
+          <div
+            class="category-fill"
+            style="width:${percentage}%"
+          >
+          </div>
+
+        </div>
+
+        <div class="category-amount">
+          ${euro.format(amount)}
+        </div>
+
+      `;
+
+
+      chart.appendChild(row);
+
+    }
+  );
+
+}
+
+
+
+function getLastMonths(count) {
+
+  const result =
+    [];
+
+  const now =
+    new Date();
+
+
+  for (
+    let i = count - 1;
+    i >= 0;
+    i--
+  ) {
+
+    const date =
+      new Date(
+        now.getFullYear(),
+        now.getMonth() - i,
+        1
+      );
+
+
+    result.push(
+
+      `${date.getFullYear()}-${
+        String(
+          date.getMonth() + 1
+        ).padStart(2,"0")
+      }`
+
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+
+function renderMonthlyChart() {
+
+  const container =
+    document.getElementById(
+      "monthlyChart"
+    );
+
+
+  const months =
+    getLastMonths(6);
+
+
+  const data =
+    months.map(
+      month => {
+
+        const items =
+          transactions.filter(
+            item =>
+              item.date
+                .startsWith(month)
+          );
+
+
+        const income =
+          items
+
+            .filter(
+              item =>
+                item.type === "income"
+            )
+
+            .reduce(
+              (sum,item) =>
+                sum +
+                Number(item.amount),
+              0
+            );
+
+
+        const expense =
+          items
+
+            .filter(
+              item =>
+                item.type === "expense"
+            )
+
+            .reduce(
+              (sum,item) =>
+                sum +
+                Number(item.amount),
+              0
+            );
+
+
+        return {
+          month,
+          income,
+          expense
+        };
+
       }
+    );
 
-    ];
+
+  const maxValue =
+    Math.max(
+      1,
+      ...data.map(
+        item =>
+          Math.max(
+            item.income,
+            item.expense
+          )
+      )
+    );
 
 
-    saveTransactions();
+  container.innerHTML =
+    "";
 
-    resetForm();
 
-    renderTransactions();
+  data.forEach(
+    item => {
+
+      const column =
+        document.createElement(
+          "div"
+        );
+
+
+      column.className =
+        "month-column";
+
+
+      column.innerHTML = `
+
+        <div
+          class="month-bars"
+          title="Ingresos: ${
+            euro.format(
+              item.income
+            )
+          } · Gastos: ${
+            euro.format(
+              item.expense
+            )
+          }"
+        >
+
+          <div
+            class="month-income"
+            style="height:${
+              (
+                item.income /
+                maxValue
+              ) * 100
+            }%"
+          >
+          </div>
+
+          <div
+            class="month-expense"
+            style="height:${
+              (
+                item.expense /
+                maxValue
+              ) * 100
+            }%"
+          >
+          </div>
+
+        </div>
+
+        <div class="month-label">
+          ${monthName(
+            item.month
+          )}
+        </div>
+
+      `;
+
+
+      container.appendChild(
+        column
+      );
+
+    }
+  );
+
+}
+
+
+
+// ==========================================
+// PRESUPUESTOS
+// ==========================================
+
+const budgetForm =
+  document.getElementById(
+    "budgetForm"
+  );
+
+
+const budgetList =
+  document.getElementById(
+    "budgetList"
+  );
+
+
+budgetForm.addEventListener(
+  "submit",
+  event => {
+
+    event.preventDefault();
+
+
+    const category =
+      document.getElementById(
+        "budgetCategory"
+      ).value;
+
+
+    const limit =
+      Number(
+        document.getElementById(
+          "budgetLimit"
+        ).value
+      );
+
+
+    if (limit <= 0) return;
+
+
+    const existing =
+      budgets.find(
+        item =>
+          item.category ===
+          category
+      );
+
+
+    if (existing) {
+
+      existing.limit =
+        limit;
+
+    }
+
+    else {
+
+      budgets.push({
+
+        id: uid(),
+
+        category,
+
+        limit
+
+      });
+
+    }
+
+
+    saveAll();
+
+    budgetForm.reset();
+
+    renderBudgets();
 
     showToast(
-      "Datos demo cargados ✓"
+      "Presupuesto guardado ✓"
     );
 
   }
@@ -1176,10 +1948,1558 @@ demoButton.addEventListener(
 
 
 
-// ========================================
-// INICIO
-// ========================================
+budgetList.addEventListener(
+  "click",
+  event => {
 
-resetForm();
+    const button =
+      event.target.closest(
+        "[data-delete-budget]"
+      );
 
-renderTransactions();
+
+    if (!button) return;
+
+
+    budgets =
+      budgets.filter(
+        item =>
+          item.id !==
+          button.dataset
+            .deleteBudget
+      );
+
+
+    saveAll();
+
+    renderBudgets();
+
+  }
+);
+
+
+
+function renderBudgets() {
+
+  const empty =
+    document.getElementById(
+      "budgetEmpty"
+    );
+
+
+  budgetList.innerHTML =
+    "";
+
+
+  empty.style.display =
+    budgets.length
+      ? "none"
+      : "block";
+
+
+  const month =
+    currentMonth();
+
+
+  budgets.forEach(
+    budget => {
+
+      const spent =
+        transactions
+
+          .filter(
+            item =>
+              item.type === "expense"
+              &&
+              item.category ===
+              budget.category
+              &&
+              item.date
+                .startsWith(month)
+          )
+
+          .reduce(
+            (sum,item) =>
+              sum +
+              Number(item.amount),
+            0
+          );
+
+
+      const percentage =
+        budget.limit
+          ?
+          (
+            spent /
+            budget.limit
+          ) * 100
+          :
+          0;
+
+
+      let statusClass =
+        "";
+
+
+      if (percentage >= 100) {
+
+        statusClass =
+          "over";
+
+      }
+
+      else if (
+        percentage >= 80
+      ) {
+
+        statusClass =
+          "warning";
+
+      }
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "item-card";
+
+
+      card.innerHTML = `
+
+        <div class="item-card-top">
+
+          <div>
+
+            <h3>
+              ${categoryIcon(
+                budget.category
+              )}
+              ${escapeHTML(
+                budget.category
+              )}
+            </h3>
+
+            <p>
+              Límite:
+              ${euro.format(
+                budget.limit
+              )}
+            </p>
+
+          </div>
+
+          <button
+            class="small-delete"
+            data-delete-budget="${
+              budget.id
+            }"
+          >
+            ✕
+          </button>
+
+        </div>
+
+        <div class="progress-info">
+
+          <span>
+            ${euro.format(spent)}
+            gastados
+          </span>
+
+          <span>
+            ${Math.round(
+              percentage
+            )} %
+          </span>
+
+        </div>
+
+        <div class="progress-track">
+
+          <div
+            class="
+              progress-fill
+              ${statusClass}
+            "
+            style="width:${
+              Math.min(
+                percentage,
+                100
+              )
+            }%"
+          >
+          </div>
+
+        </div>
+
+      `;
+
+
+      budgetList.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+
+// ==========================================
+// OBJETIVOS
+// ==========================================
+
+const goalForm =
+  document.getElementById(
+    "goalForm"
+  );
+
+
+const goalList =
+  document.getElementById(
+    "goalList"
+  );
+
+
+goalForm.addEventListener(
+  "submit",
+  event => {
+
+    event.preventDefault();
+
+
+    const name =
+      document
+        .getElementById(
+          "goalName"
+        )
+        .value
+        .trim();
+
+
+    const target =
+      Number(
+        document.getElementById(
+          "goalTarget"
+        ).value
+      );
+
+
+    const saved =
+      Number(
+        document.getElementById(
+          "goalSaved"
+        ).value
+      )
+      || 0;
+
+
+    if (
+      !name
+      ||
+      target <= 0
+    ) {
+
+      return;
+
+    }
+
+
+    goals.push({
+
+      id: uid(),
+
+      name,
+
+      target,
+
+      saved:
+        Math.max(
+          saved,
+          0
+        )
+
+    });
+
+
+    saveAll();
+
+    goalForm.reset();
+
+    renderGoals();
+
+    showToast(
+      "Objetivo creado ✓"
+    );
+
+  }
+);
+
+
+
+goalList.addEventListener(
+  "click",
+  event => {
+
+    const addButton =
+      event.target.closest(
+        "[data-add-goal]"
+      );
+
+
+    const deleteButton =
+      event.target.closest(
+        "[data-delete-goal]"
+      );
+
+
+    if (addButton) {
+
+      const id =
+        addButton.dataset
+          .addGoal;
+
+
+      const input =
+        goalList.querySelector(
+          `[data-goal-input="${id}"]`
+        );
+
+
+      const amount =
+        Number(input?.value);
+
+
+      if (amount <= 0) return;
+
+
+      const goal =
+        goals.find(
+          item =>
+            item.id === id
+        );
+
+
+      if (!goal) return;
+
+
+      goal.saved +=
+        amount;
+
+
+      saveAll();
+
+      renderGoals();
+
+      showToast(
+        "Ahorro añadido ✓"
+      );
+
+    }
+
+
+    if (deleteButton) {
+
+      goals =
+        goals.filter(
+          item =>
+            item.id !==
+            deleteButton.dataset
+              .deleteGoal
+        );
+
+
+      saveAll();
+
+      renderGoals();
+
+    }
+
+  }
+);
+
+
+
+function renderGoals() {
+
+  const empty =
+    document.getElementById(
+      "goalEmpty"
+    );
+
+
+  goalList.innerHTML =
+    "";
+
+
+  empty.style.display =
+    goals.length
+      ? "none"
+      : "block";
+
+
+  goals.forEach(
+    goal => {
+
+      const percentage =
+        (
+          goal.saved /
+          goal.target
+        ) * 100;
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "item-card";
+
+
+      card.innerHTML = `
+
+        <div class="item-card-top">
+
+          <div>
+
+            <h3>
+              🎯
+              ${escapeHTML(
+                goal.name
+              )}
+            </h3>
+
+            <p>
+              ${euro.format(
+                goal.saved
+              )}
+              de
+              ${euro.format(
+                goal.target
+              )}
+            </p>
+
+          </div>
+
+          <button
+            class="small-delete"
+            data-delete-goal="${
+              goal.id
+            }"
+          >
+            ✕
+          </button>
+
+        </div>
+
+
+        <div class="progress-info">
+
+          <span>
+            Progreso
+          </span>
+
+          <span>
+            ${Math.min(
+              Math.round(
+                percentage
+              ),
+              100
+            )} %
+          </span>
+
+        </div>
+
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill"
+            style="width:${
+              Math.min(
+                percentage,
+                100
+              )
+            }%"
+          >
+          </div>
+
+        </div>
+
+
+        <div class="goal-input-row">
+
+          <input
+            data-goal-input="${
+              goal.id
+            }"
+            type="number"
+            min="0.01"
+            step="0.01"
+            placeholder="Añadir €"
+          >
+
+          <button
+            class="small-button"
+            data-add-goal="${
+              goal.id
+            }"
+          >
+            + Aportar
+          </button>
+
+        </div>
+
+      `;
+
+
+      goalList.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+
+// ==========================================
+// RECURRENTES
+// ==========================================
+
+const recurringForm =
+  document.getElementById(
+    "recurringForm"
+  );
+
+
+const recurringList =
+  document.getElementById(
+    "recurringList"
+  );
+
+
+recurringForm.addEventListener(
+  "submit",
+  event => {
+
+    event.preventDefault();
+
+
+    const description =
+      document
+        .getElementById(
+          "recurringDescription"
+        )
+        .value
+        .trim();
+
+
+    const amount =
+      Number(
+        document.getElementById(
+          "recurringAmount"
+        ).value
+      );
+
+
+    const day =
+      Number(
+        document.getElementById(
+          "recurringDay"
+        ).value
+      );
+
+
+    if (
+      !description
+      ||
+      amount <= 0
+    ) {
+
+      return;
+
+    }
+
+
+    recurring.push({
+
+      id: uid(),
+
+      type:
+        document.getElementById(
+          "recurringType"
+        ).value,
+
+      description,
+
+      amount,
+
+      category:
+        document.getElementById(
+          "recurringCategory"
+        ).value,
+
+      day:
+        Math.min(
+          31,
+          Math.max(
+            1,
+            day
+          )
+        )
+
+    });
+
+
+    saveAll();
+
+    recurringForm.reset();
+
+    document.getElementById(
+      "recurringDay"
+    ).value = 1;
+
+
+    renderRecurring();
+
+    showToast(
+      "Recurrente guardado ✓"
+    );
+
+  }
+);
+
+
+
+recurringList.addEventListener(
+  "click",
+  event => {
+
+    const apply =
+      event.target.closest(
+        "[data-apply-recurring]"
+      );
+
+
+    const remove =
+      event.target.closest(
+        "[data-delete-recurring]"
+      );
+
+
+    if (apply) {
+
+      applyRecurring(
+        apply.dataset
+          .applyRecurring
+      );
+
+    }
+
+
+    if (remove) {
+
+      recurring =
+        recurring.filter(
+          item =>
+            item.id !==
+            remove.dataset
+              .deleteRecurring
+        );
+
+
+      saveAll();
+
+      renderRecurring();
+
+    }
+
+  }
+);
+
+
+
+function recurringKey(
+  id,
+  month
+) {
+
+  return `${id}-${month}`;
+
+}
+
+
+
+function applyRecurring(id) {
+
+  const item =
+    recurring.find(
+      recurringItem =>
+        recurringItem.id === id
+    );
+
+
+  if (!item) return;
+
+
+  const month =
+    currentMonth();
+
+
+  const key =
+    recurringKey(
+      item.id,
+      month
+    );
+
+
+  if (
+    transactions.some(
+      transaction =>
+        transaction
+          .recurringKey === key
+    )
+  ) {
+
+    showToast(
+      "Ya está añadido este mes"
+    );
+
+    return;
+
+  }
+
+
+  const [
+    year,
+    monthNumber
+  ] =
+    month
+      .split("-")
+      .map(Number);
+
+
+  const maximumDay =
+    new Date(
+      year,
+      monthNumber,
+      0
+    ).getDate();
+
+
+  const day =
+    Math.min(
+      item.day,
+      maximumDay
+    );
+
+
+  const date =
+    `${month}-${
+      String(day)
+        .padStart(2,"0")
+    }`;
+
+
+  transactions.push({
+
+    id: uid(),
+
+    type:
+      item.type,
+
+    description:
+      item.description,
+
+    amount:
+      item.amount,
+
+    category:
+      item.category,
+
+    date,
+
+    recurringKey:
+      key
+
+  });
+
+
+  saveAll();
+
+  renderAll();
+
+  showToast(
+    "Movimiento mensual añadido ✓"
+  );
+
+}
+
+
+
+function renderRecurring() {
+
+  const empty =
+    document.getElementById(
+      "recurringEmpty"
+    );
+
+
+  recurringList.innerHTML =
+    "";
+
+
+  empty.style.display =
+    recurring.length
+      ? "none"
+      : "block";
+
+
+  recurring.forEach(
+    item => {
+
+      const alreadyAdded =
+        transactions.some(
+          transaction =>
+            transaction
+              .recurringKey ===
+            recurringKey(
+              item.id,
+              currentMonth()
+            )
+        );
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "item-card";
+
+
+      card.innerHTML = `
+
+        <div class="item-card-top">
+
+          <div>
+
+            <h3>
+              ${categoryIcon(
+                item.category
+              )}
+              ${escapeHTML(
+                item.description
+              )}
+            </h3>
+
+            <p>
+              ${euro.format(
+                item.amount
+              )}
+              · día
+              ${item.day}
+            </p>
+
+          </div>
+
+          <button
+            class="small-delete"
+            data-delete-recurring="${
+              item.id
+            }"
+          >
+            ✕
+          </button>
+
+        </div>
+
+
+        <button
+          class="small-button"
+          data-apply-recurring="${
+            item.id
+          }"
+          ${
+            alreadyAdded
+              ? "disabled"
+              : ""
+          }
+          style="margin-top:18px;"
+        >
+
+          ${
+            alreadyAdded
+              ?
+              "✓ Añadido este mes"
+              :
+              "Añadir este mes"
+          }
+
+        </button>
+
+      `;
+
+
+      recurringList
+        .appendChild(card);
+
+    }
+  );
+
+}
+
+
+
+// ==========================================
+// FILTROS
+// ==========================================
+
+[
+  searchInput,
+  typeFilter,
+  categoryFilter,
+  monthFilter
+]
+.forEach(
+  element => {
+
+    element.addEventListener(
+      element.tagName ===
+      "INPUT"
+        ? "input"
+        : "change",
+      renderTransactions
+    );
+
+  }
+);
+
+
+
+// ==========================================
+// DATOS DEMO
+// ==========================================
+
+document
+  .getElementById(
+    "demoButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      const hasData =
+        transactions.length
+        ||
+        budgets.length
+        ||
+        goals.length
+        ||
+        recurring.length;
+
+
+      if (
+        hasData
+        &&
+        !confirm(
+          "Esto sustituirá los datos actuales por datos demo. ¿Continuar?"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      const now =
+        new Date();
+
+
+      function dateMonthsAgo(
+        monthsAgo,
+        day
+      ) {
+
+        const date =
+          new Date(
+            now.getFullYear(),
+            now.getMonth()
+              - monthsAgo,
+            day
+          );
+
+
+        return date
+          .toISOString()
+          .split("T")[0];
+
+      }
+
+
+      transactions = [
+
+        {
+          id: uid(),
+          type: "income",
+          description:
+            "Ingreso mensual",
+          amount: 850,
+          category:
+            "Ingresos",
+          date:
+            dateMonthsAgo(
+              0,
+              1
+            )
+        },
+
+        {
+          id: uid(),
+          type: "expense",
+          description:
+            "Supermercado",
+          amount: 54.20,
+          category:
+            "Comida",
+          date:
+            dateMonthsAgo(
+              0,
+              5
+            )
+        },
+
+        {
+          id: uid(),
+          type: "expense",
+          description:
+            "Videojuego",
+          amount: 29.99,
+          category:
+            "Ocio",
+          date:
+            dateMonthsAgo(
+              0,
+              9
+            )
+        },
+
+        {
+          id: uid(),
+          type: "expense",
+          description:
+            "Transporte",
+          amount: 22,
+          category:
+            "Transporte",
+          date:
+            dateMonthsAgo(
+              0,
+              12
+            )
+        }
+
+      ];
+
+
+      for (
+        let i = 1;
+        i <= 5;
+        i++
+      ) {
+
+        transactions.push(
+
+          {
+            id: uid(),
+            type: "income",
+            description:
+              "Ingreso mensual",
+            amount:
+              700 + i * 20,
+            category:
+              "Ingresos",
+            date:
+              dateMonthsAgo(
+                i,
+                1
+              )
+          },
+
+          {
+            id: uid(),
+            type: "expense",
+            description:
+              "Gastos del mes",
+            amount:
+              220 + i * 15,
+            category:
+              "Otros",
+            date:
+              dateMonthsAgo(
+                i,
+                10
+              )
+          }
+
+        );
+
+      }
+
+
+      budgets = [
+
+        {
+          id: uid(),
+          category: "Ocio",
+          limit: 100
+        },
+
+        {
+          id: uid(),
+          category: "Comida",
+          limit: 180
+        }
+
+      ];
+
+
+      goals = [
+
+        {
+          id: uid(),
+          name:
+            "Nuevo ordenador",
+          target: 1000,
+          saved: 320
+        }
+
+      ];
+
+
+      recurring = [
+
+        {
+          id: uid(),
+          type: "expense",
+          description:
+            "Suscripción",
+          amount: 9.99,
+          category: "Ocio",
+          day: 3
+        }
+
+      ];
+
+
+      saveAll();
+
+      resetTransactionForm();
+
+      renderAll();
+
+      showToast(
+        "Demo cargada ✓"
+      );
+
+    }
+  );
+
+
+
+// ==========================================
+// EXPORTAR
+// ==========================================
+
+document
+  .getElementById(
+    "exportButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      const backup = {
+
+        app:
+          "FinTrack",
+
+        version:
+          6,
+
+        exportedAt:
+          new Date()
+            .toISOString(),
+
+        transactions,
+
+        budgets,
+
+        goals,
+
+        recurring
+
+      };
+
+
+      const blob =
+        new Blob(
+          [
+            JSON.stringify(
+              backup,
+              null,
+              2
+            )
+          ],
+          {
+            type:
+              "application/json"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        url;
+
+
+      link.download =
+        `fintrack-backup-${today()}.json`;
+
+
+      link.click();
+
+
+      URL.revokeObjectURL(
+        url
+      );
+
+
+      showToast(
+        "Copia exportada ✓"
+      );
+
+    }
+  );
+
+
+
+// ==========================================
+// IMPORTAR
+// ==========================================
+
+const importFile =
+  document.getElementById(
+    "importFile"
+  );
+
+
+document
+  .getElementById(
+    "importButton"
+  )
+  .addEventListener(
+    "click",
+    () =>
+      importFile.click()
+  );
+
+
+importFile.addEventListener(
+  "change",
+  event => {
+
+    const file =
+      event.target.files?.[0];
+
+
+    if (!file) return;
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      () => {
+
+        try {
+
+          const data =
+            JSON.parse(
+              reader.result
+            );
+
+
+          transactions =
+            Array.isArray(
+              data.transactions
+            )
+              ?
+              data.transactions
+              :
+              [];
+
+
+          budgets =
+            Array.isArray(
+              data.budgets
+            )
+              ?
+              data.budgets
+              :
+              [];
+
+
+          goals =
+            Array.isArray(
+              data.goals
+            )
+              ?
+              data.goals
+              :
+              [];
+
+
+          recurring =
+            Array.isArray(
+              data.recurring
+            )
+              ?
+              data.recurring
+              :
+              [];
+
+
+          saveAll();
+
+          renderAll();
+
+          showToast(
+            "Copia restaurada ✓"
+          );
+
+        }
+
+        catch {
+
+          alert(
+            "El archivo no parece una copia válida de FinTrack."
+          );
+
+        }
+
+      };
+
+
+    reader.readAsText(
+      file
+    );
+
+
+    event.target.value =
+      "";
+
+  }
+);
+
+
+
+// ==========================================
+// BORRAR TODO
+// ==========================================
+
+document
+  .getElementById(
+    "clearAllButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        !confirm(
+          "¿Seguro? Se borrarán todos los datos de FinTrack de este dispositivo."
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      transactions = [];
+
+      budgets = [];
+
+      goals = [];
+
+      recurring = [];
+
+
+      saveAll();
+
+      resetTransactionForm();
+
+      renderAll();
+
+      showToast(
+        "Datos borrados"
+      );
+
+    }
+  );
+
+
+
+// ==========================================
+// PWA / OFFLINE
+// ==========================================
+
+const pwaStatus =
+  document.getElementById(
+    "pwaStatus"
+  );
+
+
+const installButton =
+  document.getElementById(
+    "installButton"
+  );
+
+
+let installPrompt =
+  null;
+
+
+if (
+  "serviceWorker"
+  in navigator
+) {
+
+  navigator
+    .serviceWorker
+    .register(
+      "./script.js?v=6&sw=1"
+    )
+    .then(
+      () => {
+
+        pwaStatus.textContent =
+          "FinTrack está preparado para funcionar offline tras la primera carga.";
+
+      }
+    )
+    .catch(
+      () => {
+
+        pwaStatus.textContent =
+          "No se ha podido activar el modo offline.";
+
+      }
+    );
+
+}
+
+
+window.addEventListener(
+  "beforeinstallprompt",
+  event => {
+
+    event.preventDefault();
+
+    installPrompt =
+      event;
+
+    installButton.classList
+      .remove(
+        "hidden"
+      );
+
+    pwaStatus.textContent =
+      "FinTrack puede instalarse en este dispositivo.";
+
+  }
+);
+
+
+installButton.addEventListener(
+  "click",
+  async () => {
+
+    if (!installPrompt) return;
+
+
+    installPrompt.prompt();
+
+
+    await installPrompt.userChoice;
+
+
+    installPrompt =
+      null;
+
+
+    installButton.classList.add(
+      "hidden"
+    );
+
+  }
+);
+
+
+
+// ==========================================
+// RENDER GENERAL
+// ==========================================
+
+function renderAll() {
+
+  refreshMonthOptions();
+
+  renderSummary();
+
+  renderTransactions();
+
+  renderCategoryChart();
+
+  renderMonthlyChart();
+
+  renderBudgets();
+
+  renderGoals();
+
+  renderRecurring();
+
+}
+
+
+
+resetTransactionForm();
+
+renderAll();
+
+
+                }
