@@ -9,10 +9,10 @@
 
   <meta
     name="description"
-    content="Aplicación web demostrativa para gestionar ingresos y gastos."
+    content="Aplicación demostrativa para gestionar ingresos y gastos."
   >
 
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -25,8 +25,8 @@
       FIN<span>TRACK</span>
     </a>
 
-    <div class="local-badge">
-      ● Datos guardados en este dispositivo
+    <div class="version">
+      V2 · Local
     </div>
 
   </div>
@@ -42,7 +42,10 @@
   <section class="welcome">
 
     <div>
-      <p class="eyebrow">PANEL FINANCIERO</p>
+
+      <p class="eyebrow">
+        PANEL FINANCIERO
+      </p>
 
       <h1>
         Tu dinero,
@@ -50,12 +53,16 @@
       </h1>
 
       <p>
-        Registra movimientos y entiende rápidamente
-        dónde está tu dinero.
+        Registra, edita y analiza tus movimientos
+        directamente desde tu dispositivo.
       </p>
+
     </div>
 
-    <button id="demoButton" class="secondary-button">
+    <button
+      id="demoButton"
+      class="secondary-button"
+    >
       Cargar datos demo
     </button>
 
@@ -67,52 +74,111 @@
   <section class="summary-grid">
 
     <article class="summary-card balance-card">
-      <span>Saldo actual</span>
-      <strong id="balanceValue">0,00 €</strong>
-      <small>Ingresos − gastos</small>
+
+      <span>
+        Saldo actual
+      </span>
+
+      <strong id="balanceValue">
+        0,00 €
+      </strong>
+
+      <small>
+        Ingresos − gastos
+      </small>
+
     </article>
 
-    <article class="summary-card">
-      <span>Ingresos</span>
-      <strong id="incomeValue">0,00 €</strong>
-      <small>Total registrado</small>
-    </article>
 
     <article class="summary-card">
-      <span>Gastos</span>
-      <strong id="expenseValue">0,00 €</strong>
-      <small>Total registrado</small>
+
+      <span>
+        Ingresos
+      </span>
+
+      <strong
+        id="incomeValue"
+        class="income-text"
+      >
+        0,00 €
+      </strong>
+
+      <small>
+        Total registrado
+      </small>
+
     </article>
 
+
     <article class="summary-card">
-      <span>Ahorro</span>
-      <strong id="savingValue">0 %</strong>
-      <small>Sobre los ingresos</small>
+
+      <span>
+        Gastos
+      </span>
+
+      <strong
+        id="expenseValue"
+        class="expense-text"
+      >
+        0,00 €
+      </strong>
+
+      <small>
+        Total registrado
+      </small>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <span>
+        Ahorro
+      </span>
+
+      <strong id="savingValue">
+        0 %
+      </strong>
+
+      <small>
+        Sobre tus ingresos
+      </small>
+
     </article>
 
   </section>
 
 
-  <!-- CONTENIDO -->
+  <!-- APP PRINCIPAL -->
 
   <section class="dashboard-grid">
 
 
-    <!-- NUEVO MOVIMIENTO -->
+    <!-- FORMULARIO -->
 
     <aside class="panel add-panel">
 
       <div class="panel-heading">
 
         <div>
-          <p class="eyebrow">NUEVO MOVIMIENTO</p>
-          <h2>Añadir operación</h2>
+
+          <p class="eyebrow">
+            MOVIMIENTO
+          </p>
+
+          <h2 id="formTitle">
+            Añadir operación
+          </h2>
+
         </div>
 
       </div>
 
 
       <form id="transactionForm">
+
+
+        <!-- TIPO -->
 
         <div class="type-selector">
 
@@ -135,20 +201,27 @@
         </div>
 
 
+        <!-- CONCEPTO -->
+
         <label>
+
           Concepto
 
           <input
             id="description"
             type="text"
-            placeholder="Ej. Supermercado"
             maxlength="40"
+            placeholder="Ej. Supermercado"
             required
           >
+
         </label>
 
 
+        <!-- CANTIDAD -->
+
         <label>
+
           Cantidad
 
           <div class="money-input">
@@ -169,26 +242,55 @@
         </label>
 
 
+        <!-- CATEGORÍA -->
+
         <label>
+
           Categoría
 
           <select id="category" required>
 
-            <option value="Comida">🍔 Comida</option>
-            <option value="Transporte">🚗 Transporte</option>
-            <option value="Compras">🛍️ Compras</option>
-            <option value="Ocio">🎮 Ocio</option>
-            <option value="Estudios">📚 Estudios</option>
-            <option value="Salud">❤️ Salud</option>
-            <option value="Ingresos">💰 Ingresos</option>
-            <option value="Otros">📦 Otros</option>
+            <option value="Comida">
+              🍔 Comida
+            </option>
+
+            <option value="Transporte">
+              🚗 Transporte
+            </option>
+
+            <option value="Compras">
+              🛍️ Compras
+            </option>
+
+            <option value="Ocio">
+              🎮 Ocio
+            </option>
+
+            <option value="Estudios">
+              📚 Estudios
+            </option>
+
+            <option value="Salud">
+              ❤️ Salud
+            </option>
+
+            <option value="Ingresos">
+              💰 Ingresos
+            </option>
+
+            <option value="Otros">
+              📦 Otros
+            </option>
 
           </select>
 
         </label>
 
 
+        <!-- FECHA -->
+
         <label>
+
           Fecha
 
           <input
@@ -196,11 +298,25 @@
             type="date"
             required
           >
+
         </label>
 
 
-        <button type="submit" class="primary-button">
+        <button
+          id="submitButton"
+          type="submit"
+          class="primary-button"
+        >
           Añadir movimiento
+        </button>
+
+
+        <button
+          id="cancelEdit"
+          type="button"
+          class="cancel-button hidden"
+        >
+          Cancelar edición
         </button>
 
       </form>
@@ -216,11 +332,21 @@
       <div class="panel-heading">
 
         <div>
-          <p class="eyebrow">ACTIVIDAD</p>
-          <h2>Movimientos</h2>
+
+          <p class="eyebrow">
+            ACTIVIDAD
+          </p>
+
+          <h2>
+            Movimientos
+          </h2>
+
         </div>
 
-        <span id="transactionCount" class="count">
+        <span
+          id="transactionCount"
+          class="count"
+        >
           0 movimientos
         </span>
 
@@ -261,27 +387,54 @@
             Todas las categorías
           </option>
 
-          <option value="Comida">Comida</option>
-          <option value="Transporte">Transporte</option>
-          <option value="Compras">Compras</option>
-          <option value="Ocio">Ocio</option>
-          <option value="Estudios">Estudios</option>
-          <option value="Salud">Salud</option>
-          <option value="Ingresos">Ingresos</option>
-          <option value="Otros">Otros</option>
+          <option value="Comida">
+            Comida
+          </option>
+
+          <option value="Transporte">
+            Transporte
+          </option>
+
+          <option value="Compras">
+            Compras
+          </option>
+
+          <option value="Ocio">
+            Ocio
+          </option>
+
+          <option value="Estudios">
+            Estudios
+          </option>
+
+          <option value="Salud">
+            Salud
+          </option>
+
+          <option value="Ingresos">
+            Ingresos
+          </option>
+
+          <option value="Otros">
+            Otros
+          </option>
 
         </select>
 
       </div>
 
 
-      <div id="transactionList" class="transaction-list">
+      <div
+        id="transactionList"
+        class="transaction-list"
+      >
       </div>
 
 
-      <!-- VACÍO -->
-
-      <div id="emptyState" class="empty-state">
+      <div
+        id="emptyState"
+        class="empty-state"
+      >
 
         <div class="empty-icon">
           ↗
@@ -292,7 +445,7 @@
         </h3>
 
         <p>
-          Añade tu primera operación o carga datos
+          Añade una operación o carga datos
           de demostración para probar FinTrack.
         </p>
 
@@ -304,22 +457,154 @@
 
 
 
-  <!-- INFORMACIÓN -->
+  <!-- ESTADÍSTICAS -->
+
+  <section class="analytics-grid">
+
+
+    <!-- CATEGORÍAS -->
+
+    <article class="panel category-panel">
+
+      <div class="panel-heading">
+
+        <div>
+
+          <p class="eyebrow">
+            ANÁLISIS
+          </p>
+
+          <h2>
+            Gastos por categoría
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="categoryChart"
+        class="category-chart"
+      >
+      </div>
+
+
+      <div
+        id="categoryEmpty"
+        class="mini-empty"
+      >
+        Añade gastos para ver su distribución.
+      </div>
+
+    </article>
+
+
+
+    <!-- INSIGHT -->
+
+    <article class="panel insight-panel">
+
+      <p class="eyebrow">
+        RESUMEN
+      </p>
+
+      <h2>
+        Tu mayor gasto
+      </h2>
+
+
+      <div class="top-category">
+
+        <div
+          id="topCategoryIcon"
+          class="top-category-icon"
+        >
+          —
+        </div>
+
+        <div>
+
+          <strong id="topCategoryName">
+            Sin datos
+          </strong>
+
+          <span id="topCategoryAmount">
+            0,00 €
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="insight-divider">
+      </div>
+
+
+      <div class="insight-stat">
+
+        <span>
+          Número de gastos
+        </span>
+
+        <strong id="expenseCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="insight-stat">
+
+        <span>
+          Gasto medio
+        </span>
+
+        <strong id="averageExpense">
+          0,00 €
+        </strong>
+
+      </div>
+
+
+      <div class="insight-message">
+
+        <strong>
+          FinTrack V2
+        </strong>
+
+        <p>
+          Ahora la aplicación analiza automáticamente
+          cómo se distribuyen tus gastos.
+        </p>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+
+  <!-- PRIVACIDAD -->
 
   <section class="privacy-note">
 
-    <strong>🔒 FinTrack funciona localmente.</strong>
+    <strong>
+      🔒 Todo permanece en este dispositivo.
+    </strong>
 
     <p>
-      Los movimientos se guardan únicamente en el almacenamiento
-      del navegador de este dispositivo. Este proyecto demo no
-      conecta con bancos ni envía información financiera.
+      FinTrack Demo utiliza localStorage.
+      No conecta con bancos ni transmite información financiera.
     </p>
 
   </section>
 
 
 </main>
+
 
 
 <footer>
@@ -339,7 +624,15 @@
 </footer>
 
 
-<script src="script.js?v=1"></script>
+<div
+  id="toast"
+  class="toast"
+>
+  Movimiento guardado ✓
+</div>
+
+
+<script src="script.js?v=2"></script>
 
 </body>
 
