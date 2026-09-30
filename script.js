@@ -3449,6 +3449,28 @@ installButton.addEventListener(
   "click",
   async () => {
 
+    if (installPrompt) {
+
+      installPrompt.prompt();
+
+      await installPrompt.userChoice;
+
+      installPrompt = null;
+
+      installButton.classList.add("hidden");
+
+      return;
+    }
+
+    alert(
+      "Chrome todavía no ofrece la instalación automática. Abre el menú ⋮ de Chrome y pulsa «Instalar aplicación» o «Añadir a pantalla de inicio»."
+    );
+
+  }
+);
+  "click",
+  async () => {
+
     if (!installPrompt) return;
 
 
